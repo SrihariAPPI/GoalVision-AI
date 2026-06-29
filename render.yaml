@@ -13,12 +13,24 @@ services:
       - key: PORT
         value: 4000
       - key: CORS_ORIGIN
-        sync: false # set to your Vercel URL, e.g. https://goalvision.vercel.app
-      - key: WATSONX_API_KEY
-        sync: false # optional — leave unset to run the Mock provider
-      - key: WATSONX_PROJECT_ID
         sync: false
-      - key: WATSONX_URL
-        value: https://us-south.ml.cloud.ibm.com
-      - key: WATSONX_MODEL_ID
-        value: ibm/granite-3-8b-instruct
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_BASE_URL
+        value: https://integrate.api.nvidia.com/v1
+      - key: OPENAI_MODEL
+        value: openai/gpt-oss-120b
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_FLASH_MODEL
+        value: gemini-2.5-flash
+      - key: GEMINI_PRO_MODEL
+        value: gemini-2.5-pro
+      - key: NVIDIA_API_KEY
+        sync: false
+      - key: NEMOTRON_MODEL
+        value: nvidia/nemotron-ultra
+      - key: MINIMAX_API_KEY
+        sync: false
+      - key: MINIMAX_MODEL
+        value: minimax-m3

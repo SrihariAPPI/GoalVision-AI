@@ -177,12 +177,13 @@ export function getAIProvider(): AIProviderRouter {
     const openaiKey = process.env.OPENAI_API_KEY?.trim();
     const geminiKey = process.env.GEMINI_API_KEY?.trim();
     const nvidiaKey = process.env.NVIDIA_API_KEY?.trim();
+    const minimaxKey = process.env.MINIMAX_API_KEY?.trim() || nvidiaKey;
 
     // Build from bottom up
     let minimax: AIProvider | undefined;
-    if (nvidiaKey || process.env.MINIMAX_MODEL?.trim()) {
+    if (minimaxKey || process.env.MINIMAX_MODEL?.trim()) {
       minimax = new MiniMaxProvider(
-        { apiKey: nvidiaKey ?? "", model: process.env.MINIMAX_MODEL?.trim() },
+        { apiKey: minimaxKey ?? "", model: process.env.MINIMAX_MODEL?.trim() },
         mock
       );
     }
