@@ -34,3 +34,7 @@ services:
         sync: false
       - key: MINIMAX_MODEL
         value: minimax-m3
+      - key: RAPIDAPI_KEY
+        sync: false
+      - key: RAPIDAPI_HOST
+        value: api-football186.p.rapidapi.com
