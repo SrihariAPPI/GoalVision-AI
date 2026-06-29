@@ -1,0 +1,24 @@
+# Render Blueprint for the GoalVision AI backend.
+# Deploy: push to GitHub, then "New + > Blueprint" in Render and point it at this repo.
+services:
+  - type: web
+    name: goalvision-api
+    runtime: node
+    rootDir: backend
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: PORT
+        value: 4000
+      - key: CORS_ORIGIN
+        sync: false # set to your Vercel URL, e.g. https://goalvision.vercel.app
+      - key: WATSONX_API_KEY
+        sync: false # optional — leave unset to run the Mock provider
+      - key: WATSONX_PROJECT_ID
+        sync: false
+      - key: WATSONX_URL
+        value: https://us-south.ml.cloud.ibm.com
+      - key: WATSONX_MODEL_ID
+        value: ibm/granite-3-8b-instruct
