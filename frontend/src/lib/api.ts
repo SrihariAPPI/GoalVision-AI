@@ -1,4 +1,4 @@
-import type { AIResult, ChatTurn, Match, MatchSummaryCard, Side } from "../types";
+import type { AIResult, AIStatus, ChatTurn, Match, MatchSummaryCard, Side } from "../types";
 import { matches as localMatches, getMatch as getLocalMatch } from "../data/matches";
 
 const BASE = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "") ?? "";
@@ -126,11 +126,11 @@ export const api = {
     }
   },
 
-  async aiStatus(): Promise<{ provider: "granite" | "mock"; live: boolean }> {
+  async aiStatus(): Promise<AIStatus> {
     try {
-      return await get("/ai-status");
+      return await get<AIStatus>("/ai-status");
     } catch {
-      return { provider: "mock", live: false };
+      return { provider: "mock", live: false, model: "mock", latency: 0, fallback: false, status: "offline" };
     }
   },
 

@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import type { MatchSummaryCard } from "../types";
+import type { AIProviderName, AIStatus, ProviderOption, MatchSummaryCard } from "../types";
 import { api } from "../lib/api";
 
 interface MatchContextValue {
@@ -7,13 +7,17 @@ interface MatchContextValue {
   loading: boolean;
   selectedId: string;
   setSelectedId: (id: string) => void;
-  aiProvider: "granite" | "mock";
+  aiProvider: AIProviderName;
   aiLive: boolean;
+  aiStatus: AIStatus | null;
+  preferredProvider: ProviderOption;
+  setPreferredProvider: (p: ProviderOption) => void;
 }
 
 const MatchContext = createContext<MatchContextValue | null>(null);
 
 const STORAGE_KEY = "goalvision.selectedMatch";
+const PROVIDER_KEY = "goalvision.preferredProvider";
 
 export function MatchProvider({ children }: { children: ReactNode }) {
   const [matches, setMatches] = useState<MatchSummaryCard[]>([]);
@@ -21,16 +25,20 @@ export function MatchProvider({ children }: { children: ReactNode }) {
   const [selectedId, setSelectedIdState] = useState<string>(
     () => localStorage.getItem(STORAGE_KEY) ?? ""
   );
-  const [aiProvider, setAiProvider] = useState<"granite" | "mock">("mock");
-  const [aiLive, setAiLive] = useState(false);
+  const [aiStatus, setAiStatus] = useState<AIStatus | null>(null);
+  const [preferredProvider, setPreferredProvider] = useState<ProviderOption>(
+    () => (localStorage.getItem(PROVIDER_KEY) as ProviderOption) ?? "auto"
+  );
+
+  const aiProvider = aiStatus?.provider ?? "mock";
+  const aiLive = aiStatus?.live ?? false;
 
   useEffect(() => {
     let active = true;
     Promise.all([api.listMatches(), api.aiStatus()]).then(([list, status]) => {
       if (!active) return;
       setMatches(list);
-      setAiProvider(status.provider);
-      setAiLive(status.live);
+      setAiStatus(status);
       setSelectedIdState((current) => current || list[0]?.id || "");
       setLoading(false);
     });
@@ -44,9 +52,24 @@ export function MatchProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(STORAGE_KEY, id);
   };
 
+  const handleSetPreferredProvider = (p: ProviderOption) => {
+    setPreferredProvider(p);
+    localStorage.setItem(PROVIDER_KEY, p);
+  };
+
   const value = useMemo(
-    () => ({ matches, loading, selectedId, setSelectedId, aiProvider, aiLive }),
-    [matches, loading, selectedId, aiProvider, aiLive]
+    () => ({
+      matches,
+      loading,
+      selectedId,
+      setSelectedId,
+      aiProvider,
+      aiLive,
+      aiStatus,
+      preferredProvider,
+      setPreferredProvider: handleSetPreferredProvider
+    }),
+    [matches, loading, selectedId, aiProvider, aiLive, aiStatus, preferredProvider]
   );
 
   return <MatchContext.Provider value={value}>{children}</MatchContext.Provider>;

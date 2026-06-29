@@ -1,9 +1,7 @@
 import { Router } from "express";
 import type { Request, Response } from "express";
-import { matches, getMatch, getEvent } from "./data/matches.js";
-import { getAIProvider } from "./ai/index.js";
-import { matchContext, eventContext } from "./ai/context.js";
-import { explainPrompt, chatPrompt, summaryPrompt, tacticalPrompt } from "./ai/prompts.js";
+import { matches, getMatch } from "./data/matches.js";
+import { getAIProvider } from "./ai/AIProviderFactory.js";
 import type { ChatRequest, ExplainEventRequest } from "./types.js";
 
 export const api = Router();
@@ -14,7 +12,7 @@ api.get("/health", (_req: Request, res: Response) => {
 
 api.get("/ai-status", (_req: Request, res: Response) => {
   const ai = getAIProvider();
-  res.json({ provider: ai.name, live: ai.isLive() });
+  res.json(ai.getStatus());
 });
 
 // List matches (compact cards for the dashboard).
@@ -47,27 +45,20 @@ api.get("/matches/:id", (req: Request, res: Response) => {
 api.post("/explain", async (req: Request, res: Response) => {
   const { matchId, eventId } = req.body as ExplainEventRequest;
   if (!matchId || !eventId) return res.status(400).json({ error: "matchId and eventId are required" });
-  const found = getEvent(matchId, eventId);
-  if (!found) return res.status(404).json({ error: "Event not found" });
 
   const ai = getAIProvider();
-  const facts = eventContext(found.match, found.event);
-  const { system, user } = explainPrompt(found.event.type, facts);
-  const text = await ai.generate({ system, user, maxTokens: 220 });
-  return res.json({ text, provider: ai.name });
+  const result = await ai.explain(matchId, eventId);
+  return res.json(result);
 });
 
 // AI Chat grounded in a single match.
 api.post("/chat", async (req: Request, res: Response) => {
   const { matchId, message } = req.body as ChatRequest;
   if (!matchId || !message) return res.status(400).json({ error: "matchId and message are required" });
-  const match = getMatch(matchId);
-  if (!match) return res.status(404).json({ error: "Match not found" });
 
   const ai = getAIProvider();
-  const { system, user } = chatPrompt(matchContext(match), message);
-  const text = await ai.generate({ system, user, maxTokens: 320 });
-  return res.json({ text, provider: ai.name });
+  const result = await ai.chat(matchId, message);
+  return res.json(result);
 });
 
 // AI match summary.
@@ -77,9 +68,8 @@ api.post("/summary", async (req: Request, res: Response) => {
   if (!match) return res.status(404).json({ error: "Match not found" });
 
   const ai = getAIProvider();
-  const { system, user } = summaryPrompt(matchContext(match));
-  const text = await ai.generate({ system, user, maxTokens: 360 });
-  return res.json({ text, provider: ai.name });
+  const result = await ai.summarize(matchId);
+  return res.json(result);
 });
 
 // Tactical read for one side.
@@ -89,7 +79,17 @@ api.post("/tactical", async (req: Request, res: Response) => {
   if (!match) return res.status(404).json({ error: "Match not found" });
 
   const ai = getAIProvider();
-  const { system, user } = tacticalPrompt(matchContext(match), side === "away" ? "away" : "home");
-  const text = await ai.generate({ system, user, maxTokens: 280 });
-  return res.json({ text, provider: ai.name });
+  const result = await ai.tactical(matchId, side);
+  return res.json(result);
+});
+
+// Generate insights (for future use).
+api.post("/insights", async (req: Request, res: Response) => {
+  const { matchId, type } = req.body as { matchId: string; type: string };
+  const match = getMatch(matchId);
+  if (!match) return res.status(404).json({ error: "Match not found" });
+
+  const ai = getAIProvider();
+  const result = await ai.generateInsights(matchId, type);
+  return res.json(result);
 });

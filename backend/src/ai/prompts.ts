@@ -62,3 +62,19 @@ export function tacticalPrompt(matchCtx: string, side: "home" | "away"): { syste
       "and one weakness the opponent exploited. 3-4 sentences, no bullet points."
   };
 }
+
+export function insightsPrompt(matchCtx: string, type: string): { system: string; user: string } {
+  const guidance: Record<string, string> = {
+    form: "Analyse how each team's recent shape and system contributed to the outcome.",
+    momentum: "Describe the key momentum swings in the match and what caused them.",
+    performance: "Identify the 2-3 best performers and explain their impact on the game.",
+    key_battle: "Pick the key tactical battle (e.g. midfield control, full-back duel) and break it down."
+  };
+  return {
+    system: SYSTEM_ANALYST,
+    user:
+      `${matchCtx}\n\n` +
+      `Task: ${guidance[type] ?? "Provide a deep analytical insight into this match."}\n` +
+      "Write 3-4 sentences a football fan would find genuinely interesting."
+  };
+}

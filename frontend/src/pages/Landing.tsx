@@ -18,7 +18,7 @@ const features = [
   { icon: ClipboardList, title: "Tactical Board", desc: "Formations, passing lanes, heat maps and momentum, beautifully visualised." },
   { icon: Activity, title: "Win Probability", desc: "See how momentum swung minute-by-minute through the biggest matches." },
   { icon: FileText, title: "AI Match Summary", desc: "A polished, broadcast-quality recap generated in seconds." },
-  { icon: ShieldCheck, title: "Powered by IBM Granite", desc: "Built on watsonx.ai, with a graceful offline mode so the demo never breaks." }
+  { icon: ShieldCheck, title: "Powered by Multi-Model AI", desc: "Routes each query to the optimal model — GPT OSS, Gemini Pro, and more — with automatic fallback." }
 ];
 
 export default function Landing() {
@@ -53,7 +53,7 @@ export default function Landing() {
           className="mb-6 inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs font-semibold text-slate-300"
         >
           <Sparkles className="h-3.5 w-3.5 text-pitch-400" />
-          IBM SkillsBuild AI Challenge · Powered by Granite
+          IBM SkillsBuild AI Challenge · Multi-Model AI Engine
         </motion.div>
 
         <motion.h1
@@ -72,7 +72,7 @@ export default function Landing() {
           className="mx-auto mt-6 max-w-2xl text-balance text-lg text-slate-400"
         >
           GoalVision AI turns raw match data into understanding. Predictions, tactics and key
-          moments — explained in plain language by IBM Granite, so anyone can follow the game.
+          moments — explained in plain language by our multi-model AI engine, so anyone can follow the game.
         </motion.p>
 
         <motion.div
@@ -131,7 +131,7 @@ export default function Landing() {
       </section>
 
       <footer className="relative z-10 border-t border-white/10 py-8 text-center text-xs text-slate-500">
-        GoalVision AI · Built for the IBM SkillsBuild AI Challenge · Granite on watsonx.ai
+        GoalVision AI · Built for the IBM SkillsBuild AI Challenge · Multi-Model AI Engine
       </footer>
     </div>
   );

@@ -1,17 +1,24 @@
-import type { AIProviderName } from "../types.js";
+import type { AIProviderName, AIResult } from "../types.js";
+
+export interface GenerateInput {
+  system: string;
+  user: string;
+  maxTokens?: number;
+}
 
 /**
- * Abstraction over the language model. The rest of the app depends only on this
- * interface, so IBM Granite and the offline Mock are fully interchangeable.
+ * Core abstraction over a language model provider.
+ * Every provider implements the raw `generate` method and the typed
+ * convenience methods that routes.ts calls directly.
  */
 export interface AIProvider {
   readonly name: AIProviderName;
-  /** True when the provider can actually reach a live model. */
+  readonly model: string;
   isLive(): boolean;
-  /**
-   * Generate a completion for a system + user prompt pair.
-   * Implementations must never throw to the caller — on failure they return a
-   * graceful fallback string so the demo keeps working.
-   */
-  generate(input: { system: string; user: string; maxTokens?: number }): Promise<string>;
+  generate(input: GenerateInput): Promise<string>;
+  chat(matchId: string, message: string): Promise<AIResult>;
+  summarize(matchId: string): Promise<AIResult>;
+  tactical(matchId: string, side: "home" | "away"): Promise<AIResult>;
+  explain(matchId: string, eventId: string): Promise<AIResult>;
+  generateInsights(matchId: string, type: string): Promise<AIResult>;
 }

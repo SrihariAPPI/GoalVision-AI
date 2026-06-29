@@ -1,11 +1,20 @@
-import { Cpu } from "lucide-react";
 import { motion } from "framer-motion";
 import { useMatches } from "../context/MatchContext";
 import { cn } from "../lib/utils";
 
+const providerLabels: Record<string, { label: string; color: string }> = {
+  "gpt-oss": { label: "GPT OSS", color: "border-pitch-500/40 bg-pitch-500/10 text-pitch-400" },
+  "gemini-pro": { label: "Gemini Pro", color: "border-pitch-500/40 bg-pitch-500/10 text-pitch-400" },
+  "gemini-flash": { label: "Gemini Flash", color: "border-electric-500/30 bg-electric-500/10 text-electric-400" },
+  nemotron: { label: "Nemotron", color: "border-pitch-500/40 bg-pitch-500/10 text-pitch-400" },
+  minimax: { label: "MiniMax", color: "border-pitch-500/40 bg-pitch-500/10 text-pitch-400" },
+  mock: { label: "Demo", color: "border-electric-500/30 bg-electric-500/8 text-electric-400" }
+};
+
 export function AIProviderBadge({ className }: { className?: string }) {
-  const { aiProvider, aiLive } = useMatches();
-  const live = aiLive && aiProvider === "granite";
+  const { aiStatus, aiLive } = useMatches();
+  const info = providerLabels[aiStatus?.provider ?? "mock"] ?? providerLabels.mock;
+  const live = aiLive;
 
   if (live) {
     return (
@@ -13,16 +22,17 @@ export function AIProviderBadge({ className }: { className?: string }) {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         className={cn(
-          "inline-flex items-center gap-1.5 rounded-full border border-pitch-500/40 bg-gradient-to-r from-pitch-500/10 to-electric-500/10 px-3 py-1 text-xs font-semibold text-pitch-400",
+          "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold",
+          info.color,
           className
         )}
-        title="Connected to IBM watsonx.ai · Granite model active"
+        title={`${info.label} · ${aiStatus?.model ?? ""}`}
       >
         <span className="relative flex h-2 w-2">
           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-pitch-400 opacity-40" />
           <span className="relative inline-flex h-2 w-2 rounded-full bg-pitch-400" />
         </span>
-        Powered by IBM Granite
+        {info.label}
       </motion.span>
     );
   }
@@ -30,13 +40,14 @@ export function AIProviderBadge({ className }: { className?: string }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border border-electric-500/30 bg-electric-500/8 px-3 py-1 text-xs font-semibold text-electric-400",
+        "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold",
+        info.color,
         className
       )}
-      title="No watsonx credentials — running in offline demo mode"
+      title="Offline demo mode"
     >
-      <Cpu className="h-3 w-3" />
-      Demo Mode
+      <span className="h-2 w-2 rounded-full bg-electric-400" />
+      {info.label}
     </span>
   );
 }

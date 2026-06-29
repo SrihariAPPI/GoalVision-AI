@@ -101,12 +101,13 @@ export interface Match {
 
 // ---- AI layer contracts ----
 
-export type AIProviderName = "granite" | "mock";
-
-export interface ExplainEventRequest {
-  matchId: string;
-  eventId: string;
-}
+export type AIProviderName =
+  | "gpt-oss"
+  | "gemini-flash"
+  | "gemini-pro"
+  | "nemotron"
+  | "minimax"
+  | "mock";
 
 export interface ChatTurn {
   role: "user" | "assistant";
@@ -117,9 +118,27 @@ export interface ChatRequest {
   matchId: string;
   message: string;
   history?: ChatTurn[];
+  provider?: AIProviderName;
+}
+
+export interface ExplainEventRequest {
+  matchId: string;
+  eventId: string;
+  provider?: AIProviderName;
 }
 
 export interface AIResult {
   text: string;
   provider: AIProviderName;
+  model?: string;
+  latency?: number;
+}
+
+export interface AIStatus {
+  provider: AIProviderName;
+  live: boolean;
+  model: string;
+  latency: number;
+  fallback: boolean;
+  status: "ok" | "degraded" | "offline";
 }

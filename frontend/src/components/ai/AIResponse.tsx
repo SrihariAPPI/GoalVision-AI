@@ -55,7 +55,7 @@ export function AIResponse({ loading, text, provider, title = "GoalVision AI", c
           )}
           {provider && !loading && (
             <span className="rounded-full bg-white/5 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-400">
-              {provider === "granite" ? "IBM Granite" : "Demo AI"}
+              {provider === "mock" ? "Demo AI" : provider.replace("-", " ").toUpperCase()}
             </span>
           )}
         </div>

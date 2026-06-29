@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { createApp } from "./app.js";
-import { getAIProvider } from "./ai/index.js";
+import { getAIProvider } from "./ai/AIProviderFactory.js";
 
 const PORT = Number(process.env.PORT) || 4000;
 

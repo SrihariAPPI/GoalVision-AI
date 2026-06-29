@@ -75,16 +75,16 @@ export interface ConfidenceResult {
  * Higher confidence when using Granite with rich data; lower when mocking.
  */
 export function computeResponseConfidence(
-  provider: "granite" | "mock",
+  provider: string,
   match?: Match,
   analysisType?: "explain" | "chat" | "summary" | "tactical"
 ): ConfidenceResult {
   const reasons: string[] = [];
   let base = 50;
 
-  if (provider === "granite") {
+  if (provider !== "mock") {
     base += 25;
-    reasons.push("IBM Granite foundation model");
+    reasons.push(`${provider.replace("-", " ").toUpperCase()} model`);
   } else {
     base += 10;
     reasons.push("Local analysis engine");

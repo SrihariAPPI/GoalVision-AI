@@ -110,12 +110,31 @@ export interface MatchSummaryCard {
   awayTeam: { name: string; shortName: string; color: string };
 }
 
-export type AIProviderName = "granite" | "mock";
+export type AIProviderName =
+  | "gpt-oss"
+  | "gemini-flash"
+  | "gemini-pro"
+  | "nemotron"
+  | "minimax"
+  | "mock";
 
 export interface AIResult {
   text: string;
   provider: AIProviderName;
+  model?: string;
+  latency?: number;
 }
+
+export interface AIStatus {
+  provider: AIProviderName;
+  live: boolean;
+  model: string;
+  latency: number;
+  fallback: boolean;
+  status: "ok" | "degraded" | "offline";
+}
+
+export type ProviderOption = AIProviderName | "auto";
 
 export interface ChatTurn {
   role: "user" | "assistant";
