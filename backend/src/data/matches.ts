@@ -4,6 +4,320 @@ import type { Match } from "../types.js";
 // real fixtures but lightly rounded for a clean demo. No ML, no ingestion — just data.
 
 export const matches: Match[] = [
+  // ===== Live / recent fixtures =====
+  {
+    id: "pl-2026-mci-liv",
+    competition: "Premier League",
+    stage: "Matchweek 32",
+    date: "2026-04-05",
+    venue: "Etihad Stadium",
+    city: "Manchester, England",
+    status: "live",
+    result: "2-1 (half-time)",
+    headline: "City lead at the break after a pulsating first half at the Etihad",
+    score: { home: 2, away: 1, halfTime: [1, 1] },
+    homeTeam: {
+      id: "mci",
+      name: "Manchester City",
+      shortName: "MCI",
+      color: "#6CABDD",
+      accent: "#1C2F5A",
+      formation: "4-3-3",
+      manager: "Pep Guardiola",
+      lineup: [
+        { id: "mci-1", name: "Ederson", number: 31, position: "GK", x: 5, y: 50, rating: 7.0 },
+        { id: "mci-2", name: "Kyle Walker", number: 2, position: "RB", x: 22, y: 85, rating: 6.9 },
+        { id: "mci-3", name: "Rúben Dias", number: 3, position: "CB", x: 20, y: 62, rating: 7.2 },
+        { id: "mci-4", name: "Manuel Akanji", number: 25, position: "CB", x: 20, y: 38, rating: 7.0 },
+        { id: "mci-5", name: "Joško Gvardiol", number: 24, position: "LB", x: 22, y: 15, rating: 7.1 },
+        { id: "mci-6", name: "Rodri", number: 16, position: "DM", x: 34, y: 50, rating: 7.8 },
+        { id: "mci-7", name: "Kevin De Bruyne", number: 17, position: "CM", x: 42, y: 55, rating: 8.3 },
+        { id: "mci-8", name: "Bernardo Silva", number: 20, position: "CM", x: 40, y: 40, rating: 7.5 },
+        { id: "mci-9", name: "Phil Foden", number: 47, position: "RW", x: 48, y: 75, rating: 8.0 },
+        { id: "mci-10", name: "Erling Haaland", number: 9, position: "ST", x: 50, y: 50, rating: 8.1 },
+        { id: "mci-11", name: "Jack Grealish", number: 10, position: "LW", x: 48, y: 25, rating: 7.3 }
+      ],
+      substitutes: [
+        { id: "mci-12", name: "Julián Álvarez", number: 19, position: "ST", x: 50, y: 50 },
+        { id: "mci-13", name: "Mateo Kovačić", number: 8, position: "CM", x: 38, y: 50 },
+        { id: "mci-14", name: "Rico Lewis", number: 82, position: "RB", x: 22, y: 85 }
+      ]
+    },
+    awayTeam: {
+      id: "liv26",
+      name: "Liverpool",
+      shortName: "LIV",
+      color: "#C8102E",
+      accent: "#00B2A9",
+      formation: "4-3-3",
+      manager: "Arne Slot",
+      lineup: [
+        { id: "lv26-1", name: "Alisson", number: 1, position: "GK", x: 5, y: 50, rating: 7.2 },
+        { id: "lv26-2", name: "Trent Alexander-Arnold", number: 66, position: "RB", x: 22, y: 85, rating: 7.5 },
+        { id: "lv26-3", name: "Ibrahima Konaté", number: 5, position: "CB", x: 20, y: 62, rating: 7.1 },
+        { id: "lv26-4", name: "Virgil van Dijk", number: 4, position: "CB", x: 20, y: 38, rating: 7.6 },
+        { id: "lv26-5", name: "Andy Robertson", number: 26, position: "LB", x: 22, y: 15, rating: 7.0 },
+        { id: "lv26-6", name: "Alexis Mac Allister", number: 10, position: "CM", x: 38, y: 55, rating: 7.4 },
+        { id: "lv26-7", name: "Ryan Gravenberch", number: 38, position: "DM", x: 34, y: 50, rating: 7.0 },
+        { id: "lv26-8", name: "Dominik Szoboszlai", number: 8, position: "CM", x: 40, y: 40, rating: 7.2 },
+        { id: "lv26-9", name: "Mohamed Salah", number: 11, position: "RW", x: 48, y: 75, rating: 7.8 },
+        { id: "lv26-10", name: "Darwin Núñez", number: 9, position: "ST", x: 50, y: 50, rating: 6.9 },
+        { id: "lv26-11", name: "Luis Díaz", number: 7, position: "LW", x: 48, y: 25, rating: 7.6 }
+      ],
+      substitutes: [
+        { id: "lv26-12", name: "Cody Gakpo", number: 18, position: "LW", x: 48, y: 25 },
+        { id: "lv26-13", name: "Harvey Elliott", number: 19, position: "CM", x: 40, y: 50 },
+        { id: "lv26-14", name: "Jarell Quansah", number: 78, position: "CB", x: 20, y: 50 }
+      ]
+    },
+    stats: {
+      possession: [54, 46],
+      shots: [8, 5],
+      shotsOnTarget: [4, 3],
+      xg: [1.4, 0.8],
+      passes: [320, 260],
+      passAccuracy: [88, 83],
+      corners: [4, 2],
+      fouls: [5, 8],
+      offsides: [1, 2],
+      yellowCards: [1, 2],
+      redCards: [0, 0]
+    },
+    events: [
+      { id: "mcl-e1", minute: 12, type: "goal", side: "away", player: "Mohamed Salah", assist: "Luis Díaz", detail: "Salah cuts inside and curls a left-footed shot into the far corner", x: 88, y: 60 },
+      { id: "mcl-e2", minute: 28, type: "yellow-card", side: "away", player: "Ryan Gravenberch", detail: "Late challenge on De Bruyne in midfield", x: 32, y: 50 },
+      { id: "mcl-e3", minute: 34, type: "goal", side: "home", player: "Erling Haaland", assist: "Kevin De Bruyne", detail: "De Bruyne's low cross turned in from six yards", x: 91, y: 50 },
+      { id: "mcl-e4", minute: 42, type: "goal", side: "home", player: "Phil Foden", assist: "Bernardo Silva", detail: "Foden drills home from the edge of the box after a defensive clearance", x: 85, y: 45 },
+      { id: "mcl-e5", minute: 45, type: "yellow-card", side: "home", player: "Rodri", detail: "Booked for a tactical foul on a Liverpool counter", x: 34, y: 40 }
+    ],
+    momentum: [
+      { minute: 0, value: 10 },
+      { minute: 12, value: -40 },
+      { minute: 25, value: 0 },
+      { minute: 34, value: 35 },
+      { minute: 42, value: 55 },
+      { minute: 45, value: 40 }
+    ],
+    heatmap: {
+      home: [
+        { x: 40, y: 50, intensity: 0.6 },
+        { x: 60, y: 70, intensity: 0.7 },
+        { x: 75, y: 45, intensity: 0.8 }
+      ],
+      away: [
+        { x: 35, y: 50, intensity: 0.5 },
+        { x: 55, y: 30, intensity: 0.7 },
+        { x: 70, y: 55, intensity: 0.6 }
+      ]
+    }
+  },
+  {
+    id: "ll-2026-bar-mad",
+    competition: "La Liga",
+    stage: "El Clásico — Matchweek 30",
+    date: "2026-04-12",
+    venue: "Camp Nou",
+    city: "Barcelona, Spain",
+    status: "live",
+    result: "1-1 (half-time)",
+    headline: "All square at the Camp Nou as the latest Clásico delivers drama",
+    score: { home: 1, away: 1, halfTime: [1, 1] },
+    homeTeam: {
+      id: "bar26",
+      name: "Barcelona",
+      shortName: "BAR",
+      color: "#A50044",
+      accent: "#004D98",
+      formation: "4-3-3",
+      manager: "Hansi Flick",
+      lineup: [
+        { id: "b26-1", name: "Marc-André ter Stegen", number: 1, position: "GK", x: 5, y: 50, rating: 7.0 },
+        { id: "b26-2", name: "Jules Koundé", number: 5, position: "RB", x: 22, y: 85, rating: 7.2 },
+        { id: "b26-3", name: "Ronald Araújo", number: 4, position: "CB", x: 20, y: 62, rating: 7.5 },
+        { id: "b26-4", name: "Andreas Christensen", number: 15, position: "CB", x: 20, y: 38, rating: 7.1 },
+        { id: "b26-5", name: "Alejandro Balde", number: 3, position: "LB", x: 22, y: 15, rating: 7.3 },
+        { id: "b26-6", name: "İlkay Gündoğan", number: 22, position: "CM", x: 38, y: 55, rating: 7.6 },
+        { id: "b26-7", name: "Pedri", number: 8, position: "CM", x: 36, y: 45, rating: 7.8 },
+        { id: "b26-8", name: "Frenkie de Jong", number: 21, position: "DM", x: 34, y: 50, rating: 7.4 },
+        { id: "b26-9", name: "Lamine Yamal", number: 19, position: "RW", x: 48, y: 78, rating: 7.9 },
+        { id: "b26-10", name: "Robert Lewandowski", number: 9, position: "ST", x: 50, y: 50, rating: 7.5 },
+        { id: "b26-11", name: "Raphinha", number: 11, position: "LW", x: 48, y: 22, rating: 7.7 }
+      ],
+      substitutes: [
+        { id: "b26-12", name: "Ferran Torres", number: 7, position: "ST", x: 50, y: 50 },
+        { id: "b26-13", name: "João Cancelo", number: 2, position: "RB", x: 22, y: 85 },
+        { id: "b26-14", name: "Fermín López", number: 16, position: "CM", x: 38, y: 50 }
+      ]
+    },
+    awayTeam: {
+      id: "mad26",
+      name: "Real Madrid",
+      shortName: "RMA",
+      color: "#FEBE10",
+      accent: "#00529F",
+      formation: "4-3-3",
+      manager: "Carlo Ancelotti",
+      lineup: [
+        { id: "m26-1", name: "Thibaut Courtois", number: 1, position: "GK", x: 5, y: 50, rating: 7.3 },
+        { id: "m26-2", name: "Dani Carvajal", number: 2, position: "RB", x: 22, y: 85, rating: 7.0 },
+        { id: "m26-3", name: "Antonio Rüdiger", number: 22, position: "CB", x: 20, y: 62, rating: 7.4 },
+        { id: "m26-4", name: "David Alaba", number: 4, position: "CB", x: 20, y: 38, rating: 7.2 },
+        { id: "m26-5", name: "Ferland Mendy", number: 23, position: "LB", x: 22, y: 15, rating: 6.9 },
+        { id: "m26-6", name: "Aurélien Tchouaméni", number: 14, position: "DM", x: 34, y: 50, rating: 7.1 },
+        { id: "m26-7", name: "Federico Valverde", number: 8, position: "CM", x: 40, y: 55, rating: 7.6 },
+        { id: "m26-8", name: "Jude Bellingham", number: 5, position: "AM", x: 44, y: 48, rating: 8.0 },
+        { id: "m26-9", name: "Vinícius Jr", number: 7, position: "LW", x: 48, y: 22, rating: 8.2 },
+        { id: "m26-10", name: "Rodrygo", number: 11, position: "RW", x: 48, y: 78, rating: 7.3 },
+        { id: "m26-11", name: "Kylian Mbappé", number: 9, position: "ST", x: 50, y: 50, rating: 7.8 }
+      ],
+      substitutes: [
+        { id: "m26-12", name: "Luka Modrić", number: 10, position: "CM", x: 40, y: 50 },
+        { id: "m26-13", name: "Eduardo Camavinga", number: 12, position: "CM", x: 38, y: 50 },
+        { id: "m26-14", name: "Brahim Díaz", number: 21, position: "AM", x: 44, y: 48 }
+      ]
+    },
+    stats: {
+      possession: [52, 48],
+      shots: [6, 7],
+      shotsOnTarget: [3, 4],
+      xg: [0.9, 1.1],
+      passes: [289, 270],
+      passAccuracy: [86, 84],
+      corners: [3, 3],
+      fouls: [6, 7],
+      offsides: [2, 1],
+      yellowCards: [1, 1],
+      redCards: [0, 0]
+    },
+    events: [
+      { id: "brm-e1", minute: 18, type: "goal", side: "home", player: "Robert Lewandowski", assist: "Lamine Yamal", detail: "Yamal's cross headed home by Lewandowski at the near post", x: 89, y: 52 },
+      { id: "brm-e2", minute: 32, type: "yellow-card", side: "away", player: "Antonio Rüdiger", detail: "Rüdiger cautioned for a strong challenge on Pedri", x: 36, y: 50 },
+      { id: "brm-e3", minute: 38, type: "goal", side: "away", player: "Kylian Mbappé", assist: "Jude Bellingham", detail: "Bellingham's through ball splits the defence, Mbappé slots home", x: 90, y: 48 },
+      { id: "brm-e4", minute: 42, type: "yellow-card", side: "home", player: "Ronald Araújo", detail: "Araújo booked for stopping a Madrid counter", x: 30, y: 55 }
+    ],
+    momentum: [
+      { minute: 0, value: 5 },
+      { minute: 18, value: 45 },
+      { minute: 38, value: -30 },
+      { minute: 45, value: 0 }
+    ],
+    heatmap: {
+      home: [
+        { x: 40, y: 50, intensity: 0.6 },
+        { x: 60, y: 55, intensity: 0.7 },
+        { x: 75, y: 48, intensity: 0.5 }
+      ],
+      away: [
+        { x: 38, y: 50, intensity: 0.5 },
+        { x: 55, y: 40, intensity: 0.7 },
+        { x: 70, y: 52, intensity: 0.6 }
+      ]
+    }
+  },
+  {
+    id: "int-2026-bra-arg",
+    competition: "International Friendly",
+    stage: "FIFA Series",
+    date: "2026-03-25",
+    venue: "Maracanã",
+    city: "Rio de Janeiro, Brazil",
+    status: "live",
+    result: "0-0 (half-time)",
+    headline: "South American giants deadlocked in a tense Maracanã stalemate",
+    score: { home: 0, away: 0, halfTime: [0, 0] },
+    homeTeam: {
+      id: "bra26",
+      name: "Brazil",
+      shortName: "BRA",
+      color: "#FEDF00",
+      accent: "#009739",
+      formation: "4-3-3",
+      manager: "Dorival Jr.",
+      lineup: [
+        { id: "br26-1", name: "Alisson", number: 1, position: "GK", x: 5, y: 50, rating: 7.1 },
+        { id: "br26-2", name: "Danilo", number: 13, position: "RB", x: 22, y: 85, rating: 6.8 },
+        { id: "br26-3", name: "Éder Militão", number: 4, position: "CB", x: 20, y: 62, rating: 7.4 },
+        { id: "br26-4", name: "Marquinhos", number: 3, position: "CB", x: 20, y: 38, rating: 7.3 },
+        { id: "br26-5", name: "Renan Lodi", number: 6, position: "LB", x: 22, y: 15, rating: 6.9 },
+        { id: "br26-6", name: "Casemiro", number: 5, position: "DM", x: 34, y: 50, rating: 7.0 },
+        { id: "br26-7", name: "Lucas Paquetá", number: 7, position: "CM", x: 40, y: 55, rating: 7.2 },
+        { id: "br26-8", name: "João Gomes", number: 16, position: "CM", x: 36, y: 45, rating: 7.0 },
+        { id: "br26-9", name: "Raphinha", number: 11, position: "RW", x: 48, y: 78, rating: 7.3 },
+        { id: "br26-10", name: "Richarlison", number: 9, position: "ST", x: 50, y: 50, rating: 6.8 },
+        { id: "br26-11", name: "Vinícius Jr", number: 10, position: "LW", x: 48, y: 22, rating: 7.6 }
+      ],
+      substitutes: [
+        { id: "br26-12", name: "Gabriel Martinelli", number: 21, position: "LW", x: 48, y: 22 },
+        { id: "br26-13", name: "Bruno Guimarães", number: 8, position: "CM", x: 38, y: 50 },
+        { id: "br26-14", name: "Gabriel Jesus", number: 18, position: "ST", x: 50, y: 50 }
+      ]
+    },
+    awayTeam: {
+      id: "arg26",
+      name: "Argentina",
+      shortName: "ARG",
+      color: "#6CACE4",
+      accent: "#0B3D91",
+      formation: "4-3-3",
+      manager: "Lionel Scaloni",
+      lineup: [
+        { id: "ag26-1", name: "Emiliano Martínez", number: 23, position: "GK", x: 5, y: 50, rating: 7.5 },
+        { id: "ag26-2", name: "Nahuel Molina", number: 26, position: "RB", x: 22, y: 85, rating: 7.0 },
+        { id: "ag26-3", name: "Cristian Romero", number: 13, position: "CB", x: 20, y: 62, rating: 7.6 },
+        { id: "ag26-4", name: "Nicolás Otamendi", number: 19, position: "CB", x: 20, y: 38, rating: 7.2 },
+        { id: "ag26-5", name: "Marcos Acuña", number: 8, position: "LB", x: 22, y: 15, rating: 7.1 },
+        { id: "ag26-6", name: "Rodrigo De Paul", number: 7, position: "CM", x: 38, y: 55, rating: 7.4 },
+        { id: "ag26-7", name: "Enzo Fernández", number: 24, position: "CM", x: 36, y: 45, rating: 7.3 },
+        { id: "ag26-8", name: "Leandro Paredes", number: 5, position: "DM", x: 34, y: 50, rating: 6.9 },
+        { id: "ag26-9", name: "Lionel Messi", number: 10, position: "RW", x: 48, y: 72, rating: 7.8 },
+        { id: "ag26-10", name: "Julián Álvarez", number: 9, position: "ST", x: 50, y: 50, rating: 7.1 },
+        { id: "ag26-11", name: "Ángel Di María", number: 11, position: "LW", x: 48, y: 28, rating: 7.0 }
+      ],
+      substitutes: [
+        { id: "ag26-12", name: "Lautaro Martínez", number: 22, position: "ST", x: 50, y: 50 },
+        { id: "ag26-13", name: "Alexis Mac Allister", number: 20, position: "CM", x: 38, y: 50 },
+        { id: "ag26-14", name: "Nicolás González", number: 15, position: "LW", x: 48, y: 28 }
+      ]
+    },
+    stats: {
+      possession: [53, 47],
+      shots: [4, 5],
+      shotsOnTarget: [1, 2],
+      xg: [0.5, 0.6],
+      passes: [245, 220],
+      passAccuracy: [85, 82],
+      corners: [2, 3],
+      fouls: [9, 11],
+      offsides: [1, 3],
+      yellowCards: [2, 2],
+      redCards: [0, 0]
+    },
+    events: [
+      { id: "bra-e1", minute: 15, type: "shot", side: "home", player: "Vinícius Jr", detail: "Vinícius cuts inside and fires just wide of the far post", x: 85, y: 28 },
+      { id: "bra-e2", minute: 27, type: "yellow-card", side: "home", player: "Casemiro", detail: "Casemiro booked for a late tackle on Messi", x: 35, y: 50 },
+      { id: "bra-e3", minute: 34, type: "yellow-card", side: "away", player: "Leandro Paredes", detail: "Paredes enters the book for a frustrated challenge", x: 40, y: 55 },
+      { id: "bra-e4", minute: 41, type: "shot", side: "away", player: "Lionel Messi", detail: "Messi's free-kick tipped over the bar by Alisson", x: 82, y: 52 }
+    ],
+    momentum: [
+      { minute: 0, value: 5 },
+      { minute: 15, value: 25 },
+      { minute: 30, value: 0 },
+      { minute: 41, value: -20 },
+      { minute: 45, value: 0 }
+    ],
+    heatmap: {
+      home: [
+        { x: 35, y: 50, intensity: 0.5 },
+        { x: 55, y: 60, intensity: 0.6 },
+        { x: 70, y: 50, intensity: 0.4 }
+      ],
+      away: [
+        { x: 36, y: 50, intensity: 0.5 },
+        { x: 50, y: 45, intensity: 0.6 },
+        { x: 68, y: 55, intensity: 0.5 }
+      ]
+    }
+  },
   {
     id: "wc-2022-final",
     competition: "FIFA World Cup",

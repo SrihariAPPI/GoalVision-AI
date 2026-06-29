@@ -1,4 +1,4 @@
-import type { AIResult, AIStatus, ChatTurn, Match, MatchSummaryCard, Side } from "../types";
+import type { AIResult, AIStatus, ChatTurn, LiveFixture, Match, MatchSummaryCard, Side } from "../types";
 import { matches as localMatches, getMatch as getLocalMatch } from "../data/matches";
 
 const BASE = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "") ?? "";
@@ -163,6 +163,31 @@ export const api = {
       return await post<AIResult>("/tactical", { matchId, side });
     } catch {
       return localTactical(matchId, side);
+    }
+  },
+
+  async getLiveMatches(): Promise<LiveFixture[]> {
+    try {
+      return await get<LiveFixture[]>("/live");
+    } catch {
+      return [];
+    }
+  },
+
+  async getFixtures(date?: string): Promise<LiveFixture[]> {
+    try {
+      const qs = date ? `?date=${date}` : "";
+      return await get<LiveFixture[]>(`/fixtures${qs}`);
+    } catch {
+      return [];
+    }
+  },
+
+  async getLiveMatch(id: string): Promise<LiveFixture | null> {
+    try {
+      return await get<LiveFixture>(`/match/${id}`);
+    } catch {
+      return null;
     }
   }
 };

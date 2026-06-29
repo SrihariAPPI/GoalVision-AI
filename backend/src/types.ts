@@ -87,7 +87,7 @@ export interface Match {
   date: string; // ISO date
   venue: string;
   city: string;
-  status: "FT" | "AET" | "PEN";
+  status: "FT" | "AET" | "PEN" | "live";
   result: string; // human readable, e.g. "Argentina win 4-2 on penalties"
   headline: string;
   homeTeam: TeamSheet;

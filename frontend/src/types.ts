@@ -83,7 +83,7 @@ export interface Match {
   date: string;
   venue: string;
   city: string;
-  status: "FT" | "AET" | "PEN";
+  status: "FT" | "AET" | "PEN" | "live";
   result: string;
   headline: string;
   homeTeam: TeamSheet;
@@ -135,6 +135,22 @@ export interface AIStatus {
 }
 
 export type ProviderOption = AIProviderName | "auto";
+
+export interface LiveFixture {
+  id: string;
+  competition: string;
+  stage: string;
+  date: string;
+  venue: string;
+  city: string;
+  status: Match["status"];
+  result: string;
+  headline: string;
+  score: Match["score"];
+  homeTeam: { name: string; shortName: string; color: string; logo?: string };
+  awayTeam: { name: string; shortName: string; color: string; logo?: string };
+  elapsed?: number;
+}
 
 export interface ChatTurn {
   role: "user" | "assistant";

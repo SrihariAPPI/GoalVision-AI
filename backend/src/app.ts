@@ -18,7 +18,11 @@ export function createApp() {
   app.get("/", (_req, res) => {
     res.json({
       name: "GoalVision AI API",
-      docs: ["/api/health", "/api/ai-status", "/api/matches", "/api/matches/:id"]
+      docs: [
+        "/api/health", "/api/ai-status", "/api/matches", "/api/matches/:id",
+        "/api/live", "/api/fixtures", "/api/match/:id",
+        "/api/standings/:league", "/api/teams/:id", "/api/player/:id"
+      ]
     });
   });
 
