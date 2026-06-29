@@ -10,7 +10,15 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org)
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)](https://react.dev)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-06B6D4?style=flat-square&logo=tailwindcss)](https://tailwindcss.com)
-[![IBM Granite](https://img.shields.io/badge/IBM-Granite-052FAD?style=flat-square&logo=ibm)](https://www.ibm.com/granite)
+[![Vercel](https://img.shields.io/badge/Deployed-Vercel-000?style=flat-square&logo=vercel)](https://frontend-kappa-one-vbm676kzvp.vercel.app)
+[![Render](https://img.shields.io/badge/Deployed-Render-46E3B7?style=flat-square&logo=render)](https://goalvision-api.onrender.com)
+
+### 🚀 Live Demo
+
+[![Launch App](https://img.shields.io/badge/🚀_Launch_App-GoalVision_AI-052FAD?style=for-the-badge)](https://frontend-kappa-one-vbm676kzvp.vercel.app)
+
+**Frontend:** https://frontend-kappa-one-vbm676kzvp.vercel.app  
+**Backend API:** https://goalvision-api.onrender.com
 
 </div>
 
@@ -23,10 +31,9 @@
 - [Solution](#-solution)
 - [Features](#-features)
 - [Explainable AI](#-explainable-ai)
-- [IBM Granite Integration](#-ibm-granite-integration)
+- [Multi-Model AI Engine](#-multi-model-ai-engine)
 - [Architecture](#-architecture)
 - [Tech Stack](#-tech-stack)
-- [Screenshots](#-screenshots)
 - [Installation](#-installation)
 - [Running Locally](#-running-locally)
 - [Deployment](#-deployment)
@@ -42,7 +49,7 @@ GoalVision AI transforms raw football match data into **understanding**. Instead
 
 The application ships with **three legendary matches**: the 2022 World Cup Final, the Miracle of Istanbul (2005), and Liverpool 4–0 Barcelona (2019).
 
-Built for the **IBM SkillsBuild AI Challenge**, GoalVision leverages **IBM Granite** on **watsonx.ai** for natural-language generation, with a seamless offline fallback so the demo never fails.
+Built for the **IBM SkillsBuild AI Challenge**, GoalVision features a **Multi-Model AI Engine** with intelligent routing across GPT OSS 120B, Gemini Pro, Gemini Flash, Nemotron Ultra, and MiniMax M3 — with automatic fallback so it never fails.
 
 ---
 
@@ -65,7 +72,7 @@ Football analytics today suffers from two problems:
 | Raw stats without context | **Natural-language explanations** for every goal, card, offside and substitution |
 | Static dashboards | **Conversational AI chat** grounded in match data — ask anything about the game |
 | No tactical insight | **Tactical board** with formations, passing lanes, heat maps, and AI-generated tactical reads |
-| Fragile demos | **Offline fallback** — works end-to-end without any external API |
+| Fragile demos | **6-provider fallback chain** — GPT OSS → Gemini Pro → Gemini Flash → Nemotron → MiniMax → Mock |
 
 ---
 
@@ -80,7 +87,7 @@ Football analytics today suffers from two problems:
 | **⏱️ Match Timeline** | Every key event beautifully visualised, clickable for AI explanation |
 | **📝 AI Match Summary** | Broadcast-quality recap generated in seconds with confidence scoring |
 | **🔍 Explainable AI Panel** | SHAP-style feature attribution showing exactly what drives each prediction |
-| **🔄 Smart Fallback** | Seamless transition between IBM Granite and offline mock — zero errors |
+| **🔄 Smart Fallback** | Seamless fallback chain — never shows an error |
 
 ---
 
@@ -112,50 +119,61 @@ For every prediction, GoalVision explains **what would change it**:
 ### 3. Confidence Scoring
 
 Every AI response includes a **confidence estimate** based on:
-- Provider (IBM Granite vs Mock)
+- Provider (GPT OSS vs Gemini vs Mock)
 - Volume of match events
 - Completeness of statistics
-- Analysis type
 
 ---
 
-## 🔷 IBM Granite Integration
+## 🔷 Multi-Model AI Engine
 
-GoalVision uses a clean **strategy pattern** for AI providers:
+GoalVision uses a **multi-model routing architecture** that selects the optimal AI model for each task:
 
 ```
-┌──────────────┐     ┌──────────────────┐
-│  API Routes  │────▶│  AIProvider      │
-│  /api/*      │     │  Interface       │
-└──────────────┘     └────────┬─────────┘
-                              │
-                    ┌─────────┴─────────┐
-                    ▼                   ▼
-            ┌──────────────┐  ┌──────────────┐
-            │  Granite     │  │  Mock        │
-            │  Provider    │  │  Provider    │
-            │  (watsonx)   │  │  (offline)   │
-            └──────────────┘  └──────────────┘
+                    ┌──────────────┐
+                    │  Frontend    │
+                    │  (React)     │
+                    └──────┬───────┘
+                           │
+                    ┌──────▼───────┐
+                    │  Express     │
+                    │  Backend     │
+                    └──────┬───────┘
+                           │
+                    ┌──────▼───────┐
+                    │ AI Router    │
+                    │ (Intelligent │
+                    │  Routing)    │
+                    └──────┬───────┘
+                           │
+        ┌──────────────────┼──────────────────┐
+        ▼         ▼         ▼         ▼       ▼
+   ┌────────┐ ┌────────┐ ┌────────┐ ┌──────┐ ┌──────┐
+   │GPT OSS │ │Gemini  │ │Gemini  │ │Nemo- │ │Mini  │
+   │120B    │ │Pro     │ │Flash   │ │tron  │ │Max   │
+   │(NVIDIA)│ │(Google)│ │(Google)│ │(NVIDIA│ │      │
+   └────────┘ └────────┘ └────────┘ └──────┘ └──────┘
 ```
 
-### GraniteProvider
-- Calls IBM Granite via the watsonx.ai REST API
-- IAM token-based authentication with caching
-- Greedy decoding with repetition penalty
-- Automatic graceful degradation to Mock on failure
-- Granite chat template formatting (`<|system|>`, `<|user|>`, `<|assistant|>`)
+### Intelligent Routing
 
-### MockProvider
-- Fully offline, deterministic, no language model
-- Composes analyst-style prose from grounded match facts
-- Covers: offside, substitutions, penalties, cards, formations, comparisons, summaries, tactical reads
+| Task | Primary Model | Reason |
+|---|---|---|
+| Quick chat | Gemini Flash | Fastest, cheapest for conversation |
+| Match explanation | GPT OSS 120B | Deep reasoning on event data |
+| Match summary | GPT OSS 120B | Rich narrative generation |
+| Tactical analysis | Gemini Pro | Complex reasoning about formations |
+| Deep insights | GPT OSS 120B | Deep analytical capability |
 
-### Automatic Provider Selection
-At startup, the factory checks for `WATSONX_API_KEY` + `WATSONX_PROJECT_ID`:
-- **Present** → GraniteProvider (live)
-- **Absent** → MockProvider (offline)
+### Fallback Chain
 
-Switching is transparent — **the app never shows an error**.
+Every task type has a fallback chain. If the primary provider fails, the next is tried automatically:
+
+```
+GPT OSS 120B → Gemini Pro → Gemini Flash → Nemotron → MiniMax → Mock
+```
+
+**The user never sees an error.**
 
 ---
 
@@ -171,21 +189,24 @@ graph TB
 
     subgraph "Backend (Express + TypeScript)"
         API[API Routes /api/*]
-        API --> AI[AIProvider Interface]
-        AI --> GP[GraniteProvider]
-        AI --> MP[MockProvider]
+        API --> Router[AI Router]
+        Router --> GP[GPT OSS Provider]
+        Router --> GF[Gemini Flash Provider]
+        Router --> GPR[Gemini Pro Provider]
+        Router --> NP[Nemotron Provider]
+        Router --> MP[MiniMax Provider]
+        Router --> MK[Mock Provider]
         API --> DM[(Match Dataset)]
     end
 
-    subgraph "External"
-        GP --> WX[watsonx.ai / IBM Granite]
+    subgraph "External APIs"
+        GP --> NN[NVIDIA NIM]
+        GF --> GM[Google Gemini]
+        GPR --> GM
+        NP --> NN
     end
 
     UI --> API
-
-    style GP fill:#052FAD,color:#fff
-    style WX fill:#052FAD,color:#fff
-    style MP fill:#64748b,color:#fff
 ```
 
 ### Data Flow
@@ -200,27 +221,13 @@ User Action → React Router → Page Component → API Client (network-first)
                                    (Express)      (Bundled Data)
                                          │
                                          ▼
-                                   AIProvider.generate()
+                                   AI Router.select(task)
                                          │
                                     ┌────┴────┐
                                     ▼         ▼
-                                Granite     Mock
-                               (watsonx)  (offline)
+                                Primary     Fallback
+                                Provider    Chain
 ```
-
-### Fallback Strategy
-
-Every API call follows a **network-first, local-fallback** pattern:
-
-| API Call | Network | Fallback |
-|---|---|---|
-| `listMatches()` | `GET /api/matches` | Bundled match cards |
-| `getMatch(id)` | `GET /api/matches/:id` | Local match data |
-| `aiStatus()` | `GET /api/ai-status` | `{ provider: "mock", live: false }` |
-| `explain()` | `POST /api/explain` | `localExplain()` — keyword-driven |
-| `chat()` | `POST /api/chat` | `localChat()` — keyword-driven |
-| `summary()` | `POST /api/summary` | `localSummary()` — template-driven |
-| `tactical()` | `POST /api/tactical` | `localTactical()` — template-driven |
 
 ---
 
@@ -238,8 +245,6 @@ Every API call follows a **network-first, local-fallback** pattern:
 | Recharts | 2.15 | Interactive charts |
 | React Router | 7 | Client-side routing |
 | Lucide React | — | Icon library |
-| class-variance-authority | — | Component variants |
-| tailwind-merge | — | Class merging |
 
 ### Backend
 
@@ -248,36 +253,18 @@ Every API call follows a **network-first, local-fallback** pattern:
 | Node.js | 18+ | Runtime |
 | Express | 4.19 | HTTP framework |
 | TypeScript | 5.6 | Type safety |
-| tsx | 4.19 | Dev server (watch mode) |
-| IBM Granite | 3.0 | AI/LLM (via watsonx REST API) |
+| tsx | 4.19 | Dev server |
 
-### DevOps
+### AI Providers
 
-| Tool | Purpose |
-|---|---|
-| Render | Backend deployment |
-| Vercel | Frontend deployment |
-| GitHub | Version control |
-
----
-
-## 📸 Screenshots
-
-<div align="center">
-
-| Landing | Dashboard | Match Analysis |
+| Provider | Endpoint | Model |
 |---|---|---|
-| *Animated hero with feature cards* | *Match card grid with AI insights* | *Timeline + stats + explainability* |
-
-| Tactical Board | AI Chat | Match Summary |
-|---|---|---|
-| *Interactive pitch + formations* | *Grounded conversation* | *AI report + stats + performers* |
-
-| Explainable AI Panel | Settings |
-|---|---|
-| *SHAP-style feature attribution* | *Provider status & session info* |
-
-</div>
+| GPT OSS 120B | NVIDIA NIM (OpenAI-compatible) | `openai/gpt-oss-120b` |
+| Gemini Flash | Google Gemini | `gemini-2.5-flash` |
+| Gemini Pro | Google Gemini | `gemini-2.5-pro` |
+| Nemotron Ultra | NVIDIA NIM | `nvidia/nemotron-ultra` |
+| MiniMax M3 | MiniMax API | `minimax-m3` |
+| Mock | Offline | Deterministic prose |
 
 ---
 
@@ -287,13 +274,12 @@ Every API call follows a **network-first, local-fallback** pattern:
 
 - **Node.js 18+** (tested on Node 24)
 - **npm** (comes with Node.js)
-- **IBM Cloud account** (optional — for live Granite)
 
 ### Clone
 
 ```bash
-git clone https://github.com/your-username/goalvision-ai.git
-cd goalvision-ai
+git clone https://github.com/SrihariAPPI/GoalVision-AI.git
+cd GoalVision-AI
 ```
 
 ---
@@ -305,7 +291,8 @@ cd goalvision-ai
 ```bash
 cd backend
 npm install
-cp .env.example .env        # Optional: add watsonx credentials
+cp .env.example .env
+# Add API keys to .env (optional — runs in Mock mode without them)
 npm run dev                  # → http://localhost:4000
 ```
 
@@ -319,120 +306,26 @@ npm run dev                  # → http://localhost:5173
 
 Open **http://localhost:5173**. The Vite dev server proxies `/api` to the backend.
 
-> **No IBM credentials?** The app runs end-to-end in offline demo mode out of the box.
-
-### Production Build
-
-```bash
-# Frontend
-cd frontend
-npm run build               # Outputs to frontend/dist/
-
-# Backend
-cd backend
-npm start                   # Runs with tsx
-```
-
----
-
-## 🔑 Enabling IBM Granite (watsonx.ai)
-
-Add these to `backend/.env`:
-
-```env
-WATSONX_API_KEY=your_ibm_cloud_api_key
-WATSONX_PROJECT_ID=your_watsonx_project_id
-WATSONX_URL=https://us-south.ml.cloud.ibm.com
-WATSONX_MODEL_ID=ibm/granite-3-8b-instruct
-```
-
-Restart the backend — the console logs `IBM Granite enabled`. The app badge switches to **Powered by IBM Granite**.
+> **No API keys?** The app runs end-to-end in offline Mock mode out of the box.
 
 ---
 
 ## ☁️ Deployment
 
+### Frontend → Vercel
+
+```bash
+cd frontend
+npx vercel --prod
+```
+
+Set environment variable: `VITE_API_BASE_URL` = your Render backend URL.
+
 ### Backend → Render
 
 1. Push this repo to GitHub.
-2. In Render: **New + → Blueprint**, select the repo. `render.yaml` configures everything.
-3. Set `CORS_ORIGIN` to your Vercel URL.
-4. (Optional) Set `WATSONX_API_KEY` and `WATSONX_PROJECT_ID` as secrets.
-
-### Frontend → Vercel
-
-1. In Vercel: **New Project**, import the repo.
-2. Set **Root Directory** to `frontend`.
-3. Add env var: `VITE_API_BASE_URL` = your Render backend URL (e.g., `https://goalvision-api.onrender.com`).
-4. Deploy. `vercel.json` handles SPA routing.
-
----
-
-## 📁 Folder Structure
-
-```
-goalvision-ai/
-│
-├── frontend/                      # React 19 SPA
-│   ├── src/
-│   │   ├── main.tsx               # App entry point
-│   │   ├── App.tsx                # Route definitions + lazy loading
-│   │   ├── index.css              # Tailwind + glassmorphism + animations
-│   │   ├── types.ts               # Domain types
-│   │   ├── context/
-│   │   │   └── MatchContext.tsx    # Global state (matches, AI status)
-│   │   ├── hooks/
-│   │   │   └── useMatch.ts        # Single match fetch hook
-│   │   ├── lib/
-│   │   │   ├── api.ts             # API client with fallback
-│   │   │   ├── predictions.ts     # Win probability + SHAP attribution + confidence
-│   │   │   └── utils.ts           # cn(), formatDate(), event helpers
-│   │   ├── data/
-│   │   │   └── matches.ts         # 3 bundled historic matches
-│   │   ├── pages/
-│   │   │   ├── Landing.tsx        # Animated hero page
-│   │   │   ├── Dashboard.tsx      # Match listing grid
-│   │   │   ├── MatchAnalysis.tsx  # Timeline + stats + XAI
-│   │   │   ├── TacticalBoard.tsx  # Pitch + momentum + AI reads
-│   │   │   ├── AIChat.tsx         # Conversational AI
-│   │   │   ├── MatchSummary.tsx   # AI match report
-│   │   │   ├── Settings.tsx       # Provider status
-│   │   │   └── NotFound.tsx       # 404 page
-│   │   └── components/
-│   │       ├── ai/AIResponse.tsx           # AI answer renderer + confidence
-│   │       ├── explain/ExplainabilityPanel.tsx  # SHAP-style attribution
-│   │       ├── football/Pitch.tsx          # SVG pitch + players + heat
-│   │       ├── charts/                     # Recharts-based visualizations
-│   │       ├── match/                      # Match shell, hero, tabs, timeline, drawer
-│   │       ├── layout/                     # Navbar + footer
-│   │       └── ui/                         # Button, Card, Badge, Spinner, States
-│   ├── tailwind.config.ts
-│   ├── vite.config.ts
-│   ├── vercel.json
-│   └── package.json
-│
-├── backend/                       # Express REST API
-│   ├── src/
-│   │   ├── index.ts               # Server entry point
-│   │   ├── app.ts                 # Express app factory
-│   │   ├── routes.ts              # All API route handlers
-│   │   ├── types.ts               # Domain types
-│   │   ├── data/
-│   │   │   └── matches.ts         # 3 historic matches
-│   │   └── ai/
-│   │       ├── AIProvider.ts      # Abstract interface
-│   │       ├── index.ts           # Factory (Granite vs Mock)
-│   │       ├── GraniteProvider.ts # IBM watsonx.ai integration
-│   │       ├── MockProvider.ts    # Offline fallback
-│   │       ├── context.ts         # Factual match context builders
-│   │       └── prompts.ts         # System/user prompt templates
-│   ├── render.yaml                # Render blueprint
-│   ├── tsconfig.json
-│   └── package.json
-│
-├── package.json                   # Monorepo scripts
-└── README.md
-```
+2. In Render: **New + → Blueprint**, select the repo.
+3. Set the required environment variables in the Render dashboard.
 
 ---
 
@@ -441,13 +334,57 @@ goalvision-ai/
 | Method | Endpoint | Body | Purpose |
 |---|---|---|---|
 | `GET` | `/api/health` | — | Health check |
-| `GET` | `/api/ai-status` | — | Active AI provider |
+| `GET` | `/api/ai-status` | — | Active AI provider + status |
 | `GET` | `/api/matches` | — | List match cards |
 | `GET` | `/api/matches/:id` | — | Full match detail |
 | `POST` | `/api/explain` | `{ matchId, eventId }` | Explain an event |
-| `POST` | `/api/chat` | `{ matchId, message, history? }` | Grounded chat |
+| `POST` | `/api/chat` | `{ matchId, message }` | Grounded chat |
 | `POST` | `/api/summary` | `{ matchId }` | AI match summary |
 | `POST` | `/api/tactical` | `{ matchId, side }` | Tactical read |
+| `POST` | `/api/insights` | `{ matchId, type }` | Deep insights |
+
+---
+
+## 📁 Folder Structure
+
+```
+GoalVision-AI/
+│
+├── frontend/                      # React 19 SPA
+│   └── src/
+│       ├── main.tsx               # App entry point
+│       ├── App.tsx                # Route definitions + lazy loading
+│       ├── index.css              # Tailwind + glassmorphism + animations
+│       ├── types.ts               # Domain types
+│       ├── context/               # Global state
+│       ├── hooks/                 # Custom hooks
+│       ├── lib/                   # API client, predictions, utils
+│       ├── data/                  # Bundled match data
+│       ├── pages/                 # Route pages
+│       └── components/            # UI components
+│
+├── backend/                       # Express REST API
+│   └── src/
+│       ├── index.ts               # Server entry point
+│       ├── app.ts                 # Express app factory
+│       ├── routes.ts              # API route handlers
+│       ├── types.ts               # Domain types
+│       ├── data/                  # Match data
+│       └── ai/                    # AI Provider architecture
+│           ├── AIProvider.ts           # Interface
+│           ├── AIProviderFactory.ts    # Router + factory
+│           ├── BaseProvider.ts         # Abstract base
+│           ├── OpenAIProvider.ts       # GPT OSS (NVIDIA NIM)
+│           ├── GeminiProvider.ts       # Gemini Flash + Pro
+│           ├── NemotronProvider.ts     # Nemotron Ultra
+│           ├── MiniMaxProvider.ts      # MiniMax M3
+│           ├── MockProvider.ts         # Offline fallback
+│           ├── context.ts              # Match context builder
+│           └── prompts.ts              # Prompt templates
+│
+├── render.yaml                   # Render blueprint
+└── README.md
+```
 
 ---
 
@@ -457,10 +394,7 @@ goalvision-ai/
 - [ ] **Multi-language support** — explanations in Spanish, French, Arabic
 - [ ] **Player comparison** — head-to-head performance breakdowns
 - [ ] **Video integration** — link explanations to match highlights
-- [ ] **Custom prompts** — user-configurable AI persona and depth
-- [ ] **Granite 3.2** — upgrade to latest Granite model for enhanced reasoning
 - [ ] **PDF export** — downloadable match reports
-- [ ] **Dark/light mode** — theme toggle
 - [ ] **Progressive Web App** — offline support via service workers
 - [ ] **CI/CD pipeline** — automated testing and deployment
 
@@ -476,8 +410,9 @@ This project is built for the **IBM SkillsBuild AI Challenge**. All rights reser
 
 **GoalVision AI** · *Understand Football Like Never Before*
 
-Built with ❤️ for the IBM SkillsBuild AI Challenge
+[![Launch App](https://img.shields.io/badge/🚀_Launch_App-GoalVision_AI-052FAD?style=for-the-badge)](https://frontend-kappa-one-vbm676kzvp.vercel.app)
 
-Powered by **IBM Granite** on **watsonx.ai**
+Built with ❤️ for the IBM SkillsBuild AI Challenge  
+Powered by **GPT OSS + Gemini + Nemotron + MiniMax**
 
 </div>
