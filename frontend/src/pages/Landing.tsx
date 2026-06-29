@@ -60,7 +60,7 @@ export default function Landing() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.05 }}
-          className="text-balance text-5xl font-black leading-[1.05] tracking-tight sm:text-7xl"
+          className="text-balance text-4xl font-black leading-[1.05] tracking-tight sm:text-6xl md:text-7xl"
         >
           Understand Football <span className="gradient-text">Like Never Before</span>
         </motion.h1>

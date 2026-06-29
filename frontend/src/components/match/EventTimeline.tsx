@@ -11,7 +11,7 @@ interface Props {
 
 export function EventTimeline({ match, onExplain, activeEventId }: Props) {
   return (
-    <ol className="relative space-y-3">
+    <ol className="relative space-y-3" role="list" aria-label="Match timeline">
       <div className="absolute left-[44px] top-2 bottom-2 w-px bg-white/10" aria-hidden />
       {match.events.map((event, i) => {
         const explainable = EXPLAINABLE_EVENTS.has(event.type);
@@ -29,8 +29,17 @@ export function EventTimeline({ match, onExplain, activeEventId }: Props) {
               active ? "bg-white/10 ring-1 ring-pitch-500/40" : "glass"
             )}
             onClick={() => explainable && onExplain(event)}
+            onKeyDown={(e) => {
+              if (explainable && (e.key === "Enter" || e.key === " ")) {
+                e.preventDefault();
+                onExplain(event);
+              }
+            }}
+            role={explainable ? "button" : undefined}
+            tabIndex={explainable ? 0 : undefined}
+            aria-label={explainable ? `${eventLabel(event.type)} by ${event.player} at ${event.minute}'. Click to explain.` : undefined}
           >
-            <span className="flex h-9 w-12 shrink-0 items-center justify-center rounded-lg bg-white/5 text-xs font-bold tabular-nums text-slate-300">
+            <span className="flex h-9 w-12 shrink-0 items-center justify-center rounded-lg bg-white/5 text-xs font-bold tabular-nums text-slate-300" aria-hidden>
               {event.minute}'
             </span>
             <span className="mt-0.5 text-lg leading-none" aria-hidden>
@@ -55,6 +64,7 @@ export function EventTimeline({ match, onExplain, activeEventId }: Props) {
                   "mt-1 inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-1 text-[11px] font-semibold transition-colors",
                   active ? "bg-pitch-500/20 text-pitch-300" : "text-electric-400"
                 )}
+                aria-hidden
               >
                 <Sparkles className="h-3 w-3" /> Explain
               </span>

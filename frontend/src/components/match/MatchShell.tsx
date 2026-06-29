@@ -4,7 +4,7 @@ import type { Match } from "../../types";
 import { useMatch } from "../../hooks/useMatch";
 import { MatchHero } from "./MatchHero";
 import { MatchTabs } from "./MatchTabs";
-import { EmptyState, LoadingBlock } from "../ui/States";
+import { EmptyState, MatchSkeleton } from "../ui/States";
 
 interface Props {
   children: (match: Match) => ReactNode;
@@ -15,7 +15,7 @@ export function MatchShell({ children }: Props) {
   const { id } = useParams<{ id: string }>();
   const { match, loading } = useMatch(id);
 
-  if (loading) return <LoadingBlock />;
+  if (loading) return <MatchSkeleton />;
   if (!match)
     return (
       <EmptyState

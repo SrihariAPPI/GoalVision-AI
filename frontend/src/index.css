@@ -27,7 +27,11 @@
     @apply bg-pitch-500/30 text-white;
   }
 
-  /* Custom scrollbar */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-pitch-400/60 ring-offset-2 ring-offset-ink-950;
+  }
+
+  /* Custom scrollbar (WebKit) */
   ::-webkit-scrollbar {
     width: 10px;
     height: 10px;
@@ -40,6 +44,22 @@
   }
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-white/20;
+  }
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.1) transparent;
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
@@ -76,5 +96,17 @@
   .skeleton::after {
     content: "";
     @apply absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent;
+  }
+
+  .sr-only {
+    @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+    clip: rect(0 0 0 0);
+  }
+
+  .page-enter {
+    @apply opacity-0;
+  }
+  .page-enter-active {
+    @apply opacity-100 transition-opacity duration-300;
   }
 }

@@ -2,22 +2,26 @@ import {
   Area,
   AreaChart,
   ReferenceLine,
+  ReferenceDot,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis
 } from "recharts";
-import type { MomentumPoint } from "../../types";
+import type { Match, MomentumPoint } from "../../types";
 
 interface Props {
   data: MomentumPoint[];
   homeName: string;
   awayName: string;
+  match?: Match;
 }
 
-export function MomentumChart({ data, homeName, awayName }: Props) {
+const GOAL_TYPES = new Set(["goal", "penalty-goal"]);
+
+export function MomentumChart({ data, homeName, awayName, match }: Props) {
   return (
-    <div className="h-64 w-full">
+    <div className="h-64 w-full" role="img" aria-label={`Momentum chart: ${homeName} vs ${awayName}`}>
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={data} margin={{ top: 10, right: 8, left: -20, bottom: 0 }}>
           <defs>
@@ -53,6 +57,17 @@ export function MomentumChart({ data, homeName, awayName }: Props) {
             }}
             labelFormatter={(m) => `Minute ${m}`}
           />
+          {match?.events.filter((e) => GOAL_TYPES.has(e.type)).map((g) => (
+            <ReferenceDot
+              key={g.id}
+              x={g.minute}
+              y={0}
+              r={5}
+              fill={g.side === "home" ? "#34d399" : "#60a5fa"}
+              stroke="rgba(255,255,255,0.4)"
+              strokeWidth={1}
+            />
+          ))}
           <Area
             type="monotone"
             dataKey={(d: MomentumPoint) => Math.max(0, d.value)}
@@ -74,8 +89,14 @@ export function MomentumChart({ data, homeName, awayName }: Props) {
         </AreaChart>
       </ResponsiveContainer>
       <div className="mt-2 flex items-center justify-center gap-6 text-xs text-slate-400">
-        <span className="flex items-center gap-2"><i className="h-2 w-2 rounded-full bg-pitch-400" />{homeName} dominance</span>
-        <span className="flex items-center gap-2"><i className="h-2 w-2 rounded-full bg-electric-400" />{awayName} dominance</span>
+        <span className="flex items-center gap-2"><i className="h-2 w-2 rounded-full bg-pitch-400" />{homeName}</span>
+        <span className="flex items-center gap-2"><i className="h-2 w-2 rounded-full bg-electric-400" />{awayName}</span>
+        {match && (
+          <span className="flex items-center gap-1.5 text-slate-500">
+            <span className="inline-block h-2 w-2 rounded-full border border-white/40 bg-white/60" aria-hidden />
+            Goal
+          </span>
+        )}
       </div>
     </div>
   );

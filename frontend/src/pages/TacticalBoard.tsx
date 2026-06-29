@@ -8,6 +8,7 @@ import { AIResponse } from "../components/ai/AIResponse";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
 import { api } from "../lib/api";
+import { computeResponseConfidence } from "../lib/predictions";
 
 function TacticalInner({ match }: { match: Match }) {
   const [showLanes, setShowLanes] = useState(true);
@@ -71,13 +72,13 @@ function TacticalInner({ match }: { match: Match }) {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <MomentumChart data={match.momentum} homeName={match.homeTeam.shortName} awayName={match.awayTeam.shortName} />
+          <MomentumChart data={match.momentum} homeName={match.homeTeam.shortName} awayName={match.awayTeam.shortName} match={match} />
         </CardContent>
       </Card>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <AIResponse loading={loading} text={home?.text} provider={home?.provider} title={`${match.homeTeam.name} — Tactical Read`} />
-        <AIResponse loading={loading} text={away?.text} provider={away?.provider} title={`${match.awayTeam.name} — Tactical Read`} />
+        <AIResponse loading={loading} text={home?.text} provider={home?.provider} title={`${match.homeTeam.name} — Tactical Read`} confidence={home ? computeResponseConfidence(home.provider, match, "tactical") : undefined} />
+        <AIResponse loading={loading} text={away?.text} provider={away?.provider} title={`${match.awayTeam.name} — Tactical Read`} confidence={away ? computeResponseConfidence(away.provider, match, "tactical") : undefined} />
       </div>
     </>
   );

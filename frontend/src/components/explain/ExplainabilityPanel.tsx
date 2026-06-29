@@ -1,7 +1,14 @@
 import { motion } from "framer-motion";
-import { Brain, ShieldCheck, GitCompareArrows } from "lucide-react";
-import type { Match } from "../../types";
+import { Brain, ShieldCheck, GitCompareArrows, ChevronDown } from "lucide-react";
+import type { Match, Player } from "../../types";
 import { computeAttribution, type Factor } from "../../lib/predictions";
+
+function topPerformers(match: Match): Player[] {
+  return [...match.homeTeam.lineup, ...match.awayTeam.lineup]
+    .filter((p) => p.rating)
+    .sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0))
+    .slice(0, 5);
+}
 
 /**
  * The explainability centrepiece: a transparent, SHAP-style breakdown of which
@@ -13,9 +20,10 @@ export function ExplainabilityPanel({ match }: { match: Match }) {
   const leaningTeam =
     leaning === "home" ? match.homeTeam : leaning === "away" ? match.awayTeam : null;
   const maxMag = Math.max(...factors.map((f) => Math.abs(f.contribution)), 1);
+  const players = topPerformers(match);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" role="region" aria-label="Explainable AI prediction breakdown">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
           <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-pitch-500/20 to-electric-600/20 ring-1 ring-white/10">
@@ -34,7 +42,9 @@ export function ExplainabilityPanel({ match }: { match: Match }) {
             </div>
           </div>
         </div>
-        <ConfidenceRing value={confidence} />
+        <div className="flex items-center gap-4">
+          <ConfidenceRing value={confidence} />
+        </div>
       </div>
 
       <div>
@@ -62,9 +72,9 @@ export function ExplainabilityPanel({ match }: { match: Match }) {
           <div className="mb-2 flex items-center gap-2 text-sm font-bold">
             <ShieldCheck className="h-4 w-4 text-pitch-400" /> Evidence
           </div>
-          <ul className="space-y-1.5 text-xs text-slate-400">
+          <ul className="space-y-1.5 text-xs text-slate-400" role="list" aria-label="Feature evidence values">
             {factors.map((f) => (
-              <li key={f.label} className="flex items-center justify-between gap-2">
+              <li key={f.label} className="flex items-center justify-between gap-2" title={f.note}>
                 <span className="truncate">{f.label}</span>
                 <span className="shrink-0 tabular-nums text-slate-300">
                   {f.homeValue}
@@ -83,11 +93,44 @@ export function ExplainabilityPanel({ match }: { match: Match }) {
         </div>
       </div>
 
-      <p className="rounded-lg bg-white/5 p-3 text-[11px] leading-relaxed text-slate-500">
-        <span className="font-semibold text-slate-400">Responsible AI:</span> every contribution above is
-        an additive, fixed-weight score computed from this match's data — no hidden model. The bars sum to
-        the net edge, so you can audit exactly why GoalVision reached its verdict.
-      </p>
+      <div className="rounded-xl bg-white/5 p-4">
+        <div className="mb-3 flex items-center gap-2 text-sm font-bold">
+          <span className="text-pitch-400" aria-hidden>★</span> Top Performers
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {players.map((p) => {
+            const team = match.homeTeam.lineup.includes(p) ? match.homeTeam : match.awayTeam;
+            return (
+              <span
+                key={p.id}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-white/[0.06] px-2.5 py-1.5 text-xs"
+              >
+                <span
+                  className="inline-block h-2 w-2 rounded-full"
+                  style={{ backgroundColor: team.color }}
+                  aria-hidden
+                />
+                <span className="font-semibold text-slate-200">{p.name}</span>
+                <span className="rounded bg-gradient-to-r from-pitch-500 to-electric-500 px-1.5 py-0.5 text-[10px] font-bold text-white tabular-nums">
+                  {p.rating?.toFixed(1)}
+                </span>
+              </span>
+            );
+          })}
+        </div>
+      </div>
+
+      <details className="group rounded-lg bg-white/5 p-3">
+        <summary className="flex cursor-pointer items-center gap-2 text-[11px] font-semibold text-slate-400 hover:text-slate-300">
+          <ChevronDown className="h-3.5 w-3.5 transition-transform group-open:rotate-180" aria-hidden />
+          How the model works
+        </summary>
+        <p className="mt-2 text-[11px] leading-relaxed text-slate-500">
+          Every contribution above is an additive, fixed-weight score computed from this match's data —
+          no hidden model or black box. The bars sum to the net edge, so you can audit exactly why
+          GoalVision reached its verdict. Weights are inspectable and published — nothing is hidden.
+        </p>
+      </details>
     </div>
   );
 }
@@ -108,7 +151,7 @@ function FactorBar({
   const positive = factor.contribution >= 0;
   const widthPct = (Math.abs(factor.contribution) / maxMag) * 50;
   return (
-    <div className="group" title={factor.note}>
+    <div className="group" title={factor.note} role="group" aria-label={`${factor.label}: ${factor.contribution > 0 ? "+" : ""}${factor.contribution} points`}>
       <div className="mb-1 flex items-center justify-between text-xs">
         <span className="font-medium text-slate-300">{factor.label}</span>
         <span className="tabular-nums font-bold" style={{ color: positive ? homeColor : awayColor }}>
@@ -116,8 +159,8 @@ function FactorBar({
           {factor.contribution} pts
         </span>
       </div>
-      <div className="relative h-3 rounded-full bg-white/5">
-        <div className="absolute left-1/2 top-0 h-full w-px bg-white/20" />
+      <div className="relative h-3 rounded-full bg-white/5" role="img" aria-label={`${factor.label} contribution bar`}>
+        <div className="absolute left-1/2 top-0 h-full w-px bg-white/20" aria-hidden />
         <motion.div
           initial={{ width: 0 }}
           whileInView={{ width: `${widthPct}%` }}

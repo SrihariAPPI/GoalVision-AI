@@ -1,11 +1,17 @@
 import { MapPin, Trophy } from "lucide-react";
+import { motion } from "framer-motion";
 import type { Match } from "../../types";
 import { formatDate } from "../../lib/utils";
 import { Badge } from "../ui/Badge";
 
 export function MatchHero({ match }: { match: Match }) {
   return (
-    <div className="relative overflow-hidden rounded-2xl glass-strong p-6 sm:p-8">
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, ease: "easeOut" }}
+      className="relative overflow-hidden rounded-2xl glass-strong p-6 sm:p-8"
+    >
       <div
         className="pointer-events-none absolute -left-20 top-0 h-64 w-64 rounded-full blur-3xl"
         style={{ backgroundColor: match.homeTeam.color, opacity: 0.18 }}
@@ -44,7 +50,7 @@ export function MatchHero({ match }: { match: Match }) {
 
         <p className="mt-5 text-center text-sm font-medium text-slate-300">{match.result}</p>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Calendar, MapPin } from "lucide-react";
 import { useMatches } from "../context/MatchContext";
 import { Badge } from "../components/ui/Badge";
-import { Spinner } from "../components/ui/Spinner";
+import { DashboardSkeleton } from "../components/ui/States";
 import { formatDate } from "../lib/utils";
 
 export default function Dashboard() {
@@ -25,9 +25,7 @@ export default function Dashboard() {
       </div>
 
       {loading ? (
-        <div className="flex items-center gap-3 text-slate-400">
-          <Spinner /> Loading matches…
-        </div>
+        <DashboardSkeleton />
       ) : (
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {matches.map((m, i) => (

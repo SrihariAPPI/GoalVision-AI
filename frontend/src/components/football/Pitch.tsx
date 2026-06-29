@@ -11,7 +11,7 @@ interface PitchProps {
 /** A glassy football pitch with both formations, optional passing lanes and heat. */
 export function Pitch({ home, away, showPassingLanes = false, heat }: PitchProps) {
   return (
-    <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-emerald-950/60 to-emerald-900/30">
+    <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-emerald-950/60 to-emerald-900/30" role="img" aria-label={`Tactical pitch: ${home.name} ${home.formation} vs ${away.name} ${away.formation}`}>
       <PitchMarkings />
 
       {heat && (

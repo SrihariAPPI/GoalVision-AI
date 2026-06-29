@@ -65,6 +65,54 @@ const pct = (h: number, a: number) => (h - a) / 100;
  * percentage points toward the home (+) or away (-) side; the contributions sum
  * to the net edge. Weights are fixed and inspectable — nothing is hidden.
  */
+export interface ConfidenceResult {
+  score: number;
+  reasons: string[];
+}
+
+/**
+ * Estimate AI confidence from the provider and available match data.
+ * Higher confidence when using Granite with rich data; lower when mocking.
+ */
+export function computeResponseConfidence(
+  provider: "granite" | "mock",
+  match?: Match,
+  analysisType?: "explain" | "chat" | "summary" | "tactical"
+): ConfidenceResult {
+  const reasons: string[] = [];
+  let base = 50;
+
+  if (provider === "granite") {
+    base += 25;
+    reasons.push("IBM Granite foundation model");
+  } else {
+    base += 10;
+    reasons.push("Local analysis engine");
+  }
+
+  if (match) {
+    base += 10;
+    reasons.push("Full match dataset");
+
+    if (match.events.length > 0) {
+      base += 5;
+      reasons.push(`${match.events.length} timeline events`);
+    }
+
+    const hasStats = Object.values(match.stats).some((v) => Array.isArray(v) && v.some((n: number) => n > 0));
+    if (hasStats) {
+      base += 5;
+      reasons.push("Complete match statistics");
+    }
+  }
+
+  if (analysisType === "tactical") base += 3;
+  if (analysisType === "summary") base += 2;
+
+  const score = Math.min(99, Math.max(35, base));
+  return { score, reasons };
+}
+
 export function computeAttribution(match: Match): Attribution {
   const s = match.stats;
   const specs: FeatureSpec[] = [
