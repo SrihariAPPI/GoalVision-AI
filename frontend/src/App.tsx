@@ -12,6 +12,7 @@ const TacticalBoard = lazy(() => import("./pages/TacticalBoard"));
 const AIChat = lazy(() => import("./pages/AIChat"));
 const MatchSummary = lazy(() => import("./pages/MatchSummary"));
 const Settings = lazy(() => import("./pages/Settings"));
+const DocumentAnalysis = lazy(() => import("./pages/DocumentAnalysis"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 /** Redirect a bare scoped route (e.g. /analysis) to the currently selected match. */
@@ -120,6 +121,16 @@ export default function App() {
               <Layout>
                 <AnimatedPage>
                   <Settings />
+                </AnimatedPage>
+              </Layout>
+            }
+          />
+          <Route
+            path="/documents"
+            element={
+              <Layout>
+                <AnimatedPage>
+                  <DocumentAnalysis />
                 </AnimatedPage>
               </Layout>
             }

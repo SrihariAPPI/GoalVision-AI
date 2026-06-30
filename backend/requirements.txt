@@ -1,0 +1,8 @@
+# Python dependencies for the IBM Docling document-extraction script
+# (backend/scripts/docling_extract.py). Required only for the
+# /api/docling/* endpoints. If these are not installed, the Docling
+# endpoints return a graceful JSON error and the rest of the API keeps working.
+docling>=2.107.0
+# Optional: faster/accurate PDF page counting. The script falls back to a
+# heuristic if PyMuPDF is unavailable.
+PyMuPDF>=1.24.0

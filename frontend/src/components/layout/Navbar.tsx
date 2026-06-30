@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { LayoutDashboard, Activity, ClipboardList, MessageSquare, FileText, Settings, Menu, X } from "lucide-react";
+import { LayoutDashboard, Activity, ClipboardList, MessageSquare, FileText, Settings, Menu, X, FolderOpen } from "lucide-react";
 import { useMatches } from "../../context/MatchContext";
 import { AIProviderBadge } from "../AIProviderBadge";
 import { cn } from "../../lib/utils";
@@ -12,6 +12,7 @@ const links = [
   { to: "/tactical", label: "Tactical", icon: ClipboardList, scoped: true },
   { to: "/chat", label: "AI Chat", icon: MessageSquare, scoped: true },
   { to: "/summary", label: "Summary", icon: FileText, scoped: true },
+  { to: "/documents", label: "Documents", icon: FolderOpen, scoped: false },
   { to: "/settings", label: "Settings", icon: Settings, scoped: false }
 ];
 

@@ -3,3 +3,13 @@ dist
 .env
 *.log
 .DS_Store
+
+# Docling runtime upload/temp dirs (created on demand)
+uploads
+temp
+
+# Python artifacts (Docling extraction script)
+__pycache__
+*.pyc
+.venv
+venv

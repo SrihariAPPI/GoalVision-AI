@@ -87,7 +87,7 @@ Football analytics today suffers from two problems:
 | **⏱️ Match Timeline** | Every key event beautifully visualised, clickable for AI explanation |
 | **📝 AI Match Summary** | Broadcast-quality recap generated in seconds with confidence scoring |
 | **🔍 Explainable AI Panel** | SHAP-style feature attribution showing exactly what drives each prediction |
-| **🔄 Smart Fallback** | Seamless fallback chain — never shows an error |
+| **📄 Document Intelligence** | Upload PDF, DOCX, TXT, MD → AI extracts insights: summary, tactics, key players, strengths, weaknesses, recommendations |
 
 ---
 
@@ -174,6 +174,97 @@ GPT OSS 120B → Gemini Pro → Gemini Flash → Nemotron → MiniMax → Mock
 ```
 
 **The user never sees an error.**
+
+---
+
+## 🤖 IBM Docling Integration
+
+GoalVision AI now includes **Document Intelligence** powered by **IBM Docling** — an open-source document understanding library that converts PDFs, DOCX, TXT, and Markdown into structured Markdown and text, which is then analyzed by the Multi-Model AI Engine.
+
+### How It Works
+
+```
+PDF / DOCX / TXT / MD
+        │
+        ▼
+┌───────────────────┐
+│   IBM Docling     │  ← Layout analysis, OCR, table extraction
+│  (Python script)  │
+└───────────────────┘
+        │
+        ▼
+   Markdown + Text
+        │
+        ▼
+┌───────────────────┐
+│  Multi-Model AI   │  ← Parallel calls for each analysis aspect
+│   Router          │
+└───────────────────┘
+        │
+        ▼
+┌─────────────────────────────────────────┐
+│  Structured Analysis JSON               │
+├─────────────────────────────────────────┤
+│  • Match Summary                        │
+│  • Tactical Analysis                    │
+│  • Key Players                          │
+│  • Strengths                            │
+│  • Weaknesses                           │
+│  • Coach Recommendations                │
+└─────────────────────────────────────────┘
+```
+
+### Features
+
+| Feature | Description |
+|---|---|
+| **Multi-format support** | PDF, DOCX, TXT, Markdown via Docling's unified pipeline |
+| **Layout preservation** | Tables, headers, lists, and structure retained in Markdown |
+| **AI-powered analysis** | 6 parallel AI calls generate comprehensive football insights |
+| **Export options** | Copy Markdown, download `.md`, or download full JSON |
+| **Progressive loading** | Real-time extraction → analysis progress indicators |
+
+### API Endpoints
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| `POST` | `/api/docling/upload` | Upload file → returns extracted Markdown, text, page count |
+| `POST` | `/api/docling/analyze` | Analyze Markdown (or upload + analyze) → returns structured analysis |
+
+### Example Request
+
+```bash
+# Upload and extract
+curl -X POST https://goalvision-api.onrender.com/api/docling/upload \
+  -F "file=@match-report.pdf"
+
+# Analyze extracted content
+curl -X POST https://goalvision-api.onrender.com/api/docling/analyze \
+  -H "Content-Type: application/json" \
+  -d '{"markdown": "# Match Report\n\nLiverpool 2-1 Real Madrid..."}'
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "summary": "Liverpool secured a dramatic 2-1 victory over Real Madrid...",
+  "tacticalAnalysis": "Liverpool deployed a 4-3-3 that transitioned into a 4-5-1...",
+  "keyPlayers": "- Mohamed Salah: relentless on the right flank...\n- Virgil van Dijk: commanding at the back...",
+  "strengths": "- High press effectiveness\n- Quick transitions\n- Set-piece threat",
+  "weaknesses": "- Vulnerable to counter-attacks\n- Midfield isolation at times",
+  "recommendations": "- Adjust defensive line height\n- Increase midfield rotation"
+}
+```
+
+### Frontend: AI Document Analysis Page
+
+Visit `/documents` to:
+1. **Drag & drop** or click to upload a document
+2. Watch real-time **extraction → analysis** progress
+3. View **collapsible sections** for each analysis type
+4. **Copy**, **download Markdown**, or **download JSON**
 
 ---
 
@@ -274,6 +365,7 @@ User Action → React Router → Page Component → API Client (network-first)
 
 - **Node.js 18+** (tested on Node 24)
 - **npm** (comes with Node.js)
+- **Python 3.9+** with **IBM Docling** — required only for the Document Intelligence feature (`/documents`). Install with `pip install docling`. Without it, document upload returns a graceful "Docling not installed" error and the rest of the app is unaffected.
 
 ### Clone
 
@@ -291,6 +383,7 @@ cd GoalVision-AI
 ```bash
 cd backend
 npm install
+pip install docling          # optional — enables Document Intelligence (/documents)
 cp .env.example .env
 # Add API keys to .env (optional — runs in Mock mode without them)
 npm run dev                  # → http://localhost:4000

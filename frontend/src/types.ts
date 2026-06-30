@@ -157,3 +157,35 @@ export interface ChatTurn {
   role: "user" | "assistant";
   content: string;
 }
+
+// ---- Docling Document Intelligence ----
+
+export interface DoclingUploadResult {
+  success: boolean;
+  markdown?: string;
+  text?: string;
+  pages?: number;
+  error?: string;
+}
+
+export interface DoclingAnalysisResult {
+  success: boolean;
+  summary?: string;
+  tacticalAnalysis?: string;
+  // The backend returns each section as a single formatted string (the AI
+  // produces bullet-point text), not a string[]. Keep these as strings so the
+  // shared type matches the actual /api/docling/analyze response.
+  keyPlayers?: string;
+  strengths?: string;
+  weaknesses?: string;
+  recommendations?: string;
+  error?: string;
+}
+
+export interface DoclingMetadata {
+  filename: string;
+  format: string;
+  size_bytes: number;
+  char_count: number;
+  word_count: number;
+}

@@ -1,4 +1,4 @@
-import type { AIResult, AIStatus, ChatTurn, LiveFixture, Match, MatchSummaryCard, Side } from "../types";
+import type { AIResult, AIStatus, ChatTurn, DoclingUploadResult, DoclingAnalysisResult, LiveFixture, Match, MatchSummaryCard, Side } from "../types";
 import { matches as localMatches, getMatch as getLocalMatch } from "../data/matches";
 
 const BASE = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "") ?? "";
@@ -188,6 +188,51 @@ export const api = {
       return await get<LiveFixture>(`/match/${id}`);
     } catch {
       return null;
+    }
+  },
+
+  // ---- Docling Document Intelligence ----
+  async uploadDocument(file: File): Promise<DoclingUploadResult> {
+    const formData = new FormData();
+    formData.append("file", file);
+    
+    try {
+      const res = await fetch(`${BASE}/api/docling/upload`, {
+        method: "POST",
+        body: formData
+      });
+      if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
+      return (await res.json()) as DoclingUploadResult;
+    } catch (error) {
+      return { 
+        success: false, 
+        error: error instanceof Error ? error.message : "Upload failed" 
+      };
+    }
+  },
+
+  async analyzeDocument(file: File | null, markdown?: string): Promise<DoclingAnalysisResult> {
+    const formData = new FormData();
+    if (file) {
+      formData.append("file", file);
+    } else if (markdown) {
+      formData.append("markdown", markdown);
+    } else {
+      return { success: false, error: "No file or markdown provided" };
+    }
+
+    try {
+      const res = await fetch(`${BASE}/api/docling/analyze`, {
+        method: "POST",
+        body: formData
+      });
+      if (!res.ok) throw new Error(`Analysis failed: ${res.status}`);
+      return (await res.json()) as DoclingAnalysisResult;
+    } catch (error) {
+      return { 
+        success: false, 
+        error: error instanceof Error ? error.message : "Analysis failed" 
+      };
     }
   }
 };

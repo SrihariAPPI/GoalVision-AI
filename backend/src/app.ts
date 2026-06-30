@@ -21,7 +21,8 @@ export function createApp() {
       docs: [
         "/api/health", "/api/ai-status", "/api/matches", "/api/matches/:id",
         "/api/live", "/api/fixtures", "/api/match/:id",
-        "/api/standings/:league", "/api/teams/:id", "/api/player/:id"
+        "/api/standings/:league", "/api/teams/:id", "/api/player/:id",
+        "/api/docling/upload", "/api/docling/analyze"
       ]
     });
   });

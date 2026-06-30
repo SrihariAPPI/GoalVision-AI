@@ -1,11 +1,30 @@
 import { Router } from "express";
 import type { Request, Response } from "express";
+import multer from "multer";
+import * as path from "path";
+import * as os from "os";
 import { matches, getMatch } from "./data/matches.js";
 import { getAIProvider } from "./ai/AIProviderFactory.js";
 import type { ChatRequest, ExplainEventRequest } from "./types.js";
 import { footballApi } from "./services/footballApi.js";
+import { doclingService } from "./services/doclingService.js";
 
 export const api = Router();
+
+// Configure multer for file uploads
+const upload = multer({
+  dest: path.join(os.tmpdir(), "goalvision-docling"),
+  limits: {
+    fileSize: 25 * 1024 * 1024, // 25MB limit
+  },
+  fileFilter: (_req, file, cb) => {
+    if (doclingService.isSupportedFile(file.originalname)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Unsupported file type. Supported: PDF, DOCX, TXT, MD"));
+    }
+  }
+});
 
 api.get("/health", (_req: Request, res: Response) => {
   res.json({ status: "ok", service: "goalvision-ai" });
@@ -152,4 +171,101 @@ api.post("/insights", async (req: Request, res: Response) => {
   const ai = getAIProvider();
   const result = await ai.generateInsights(matchId, type);
   return res.json(result);
+});
+
+// ---- Docling Document Intelligence endpoints ----
+
+/**
+ * POST /api/docling/upload
+ * Upload and extract content from a document (PDF, DOCX, TXT, MD)
+ * Returns extracted markdown, text, and page count
+ */
+api.post("/docling/upload", upload.single("file"), async (req: Request, res: Response) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    const result = await doclingService.extractDocument(req.file.path, req.file.originalname);
+    
+    if (!result.success) {
+      return res.status(500).json({ 
+        success: false, 
+        error: result.error 
+      });
+    }
+
+    return res.json({
+      success: true,
+      markdown: result.markdown,
+      text: result.text,
+      pages: result.pages,
+      metadata: result.metadata
+    });
+  } catch (error) {
+    console.error("[Docling] Upload error:", error);
+    return res.status(500).json({ 
+      success: false, 
+      error: error instanceof Error ? error.message : "Upload failed" 
+    });
+  }
+});
+
+/**
+ * POST /api/docling/analyze
+ * Analyze extracted document content using AI Router
+ * Expects: { markdown: string } or { file: <uploaded file> }
+ * Returns structured analysis: summary, tactical, key players, etc.
+ */
+api.post("/docling/analyze", upload.single("file"), async (req: Request, res: Response) => {
+  try {
+    let markdown: string;
+
+    // If file uploaded, extract first
+    if (req.file) {
+      const extractResult = await doclingService.extractDocument(req.file.path, req.file.originalname);
+      if (!extractResult.success) {
+        return res.status(500).json({ 
+          success: false, 
+          error: extractResult.error 
+        });
+      }
+      markdown = extractResult.markdown || "";
+    } else if (req.body.markdown) {
+      // Use provided markdown
+      markdown = req.body.markdown;
+    } else {
+      return res.status(400).json({ 
+        success: false, 
+        error: "No file or markdown content provided" 
+      });
+    }
+
+    if (!markdown || markdown.trim().length < 50) {
+      return res.status(400).json({ 
+        success: false, 
+        error: "Document content too short for analysis" 
+      });
+    }
+
+    // Analyze with AI
+    const analysis = await doclingService.analyzeDocument(markdown, getAIProvider);
+    
+    if (!analysis.success) {
+      return res.status(500).json({ 
+        success: false, 
+        error: analysis.error 
+      });
+    }
+
+    return res.json({
+      ...analysis
+    });
+  } catch (error) {
+    console.error("[Docling] Analysis error:", error);
+    return res.status(500).json({ 
+      success: false, 
+      error: error instanceof Error ? error.message : "Analysis failed" 
+    });
+  }
 });
