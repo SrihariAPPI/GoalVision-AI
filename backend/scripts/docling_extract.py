@@ -36,8 +36,9 @@ def extract_document(file_path: str) -> dict:
         Dictionary with extraction results
     """
     try:
-        from docling.document_converter import DocumentConverter
+        from docling.document_converter import DocumentConverter, PdfFormatOption
         from docling.datamodel.base_models import InputFormat
+        from docling.datamodel.pipeline_options import PdfPipelineOptions
     except ImportError as e:
         return {
             "success": False,
@@ -62,9 +63,24 @@ def extract_document(file_path: str) -> dict:
         }
     
     try:
-        # Initialize Docling converter
-        converter = DocumentConverter()
-        
+        # Initialize Docling converter with OCR DISABLED.
+        #
+        # By default Docling runs OCR on PDFs, which pulls heavy OCR models
+        # (e.g. PaddleOCR / PP-OCRv6) and fails in environments where those
+        # models can't be loaded ("Unsupported configuration:
+        # torch.PP-OCRv6.det.small"). For digital/searchable PDFs the embedded
+        # text layer is all we need, so we skip OCR entirely and rely on plain
+        # text extraction. Table structure parsing is kept (it needs no OCR).
+        pdf_options = PdfPipelineOptions()
+        pdf_options.do_ocr = False
+        pdf_options.do_table_structure = True
+
+        converter = DocumentConverter(
+            format_options={
+                InputFormat.PDF: PdfFormatOption(pipeline_options=pdf_options)
+            }
+        )
+
         # Convert document
         result = converter.convert(file_path)
         
