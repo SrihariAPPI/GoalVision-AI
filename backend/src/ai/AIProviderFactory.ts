@@ -6,6 +6,7 @@ import type {
   Side
 } from "../types.js";
 import { OpenAIProvider } from "./OpenAIProvider.js";
+import { GraniteProvider } from "./GraniteProvider.js";
 import { GeminiProvider } from "./GeminiProvider.js";
 import { NemotronProvider } from "./NemotronProvider.js";
 import { MiniMaxProvider } from "./MiniMaxProvider.js";
@@ -13,12 +14,12 @@ import { MockProvider } from "./MockProvider.js";
 
 // ── Intelligent Router ───────────────────────────────────────────────────────
 
-type TaskType = "quick" | "deep" | "tactical";
+type TaskType = "quick" | "deep" | "tactical" | "explain";
 
 const TASK_ROUTING: Record<string, TaskType> = {
   chat: "quick",
   summarize: "deep",
-  explain: "deep",
+  explain: "explain",
   generateInsights: "deep",
   tactical: "tactical"
 };
@@ -30,9 +31,10 @@ const TASK_ROUTING: Record<string, TaskType> = {
  *   quick    → Gemini Flash
  *   deep     → GPT OSS 120B
  *   tactical → Gemini Pro
+ *   explain  → IBM Granite
  *
  * Falls back through the chain on failure:
- *   GPT OSS → Gemini Pro → Gemini Flash → Nemotron → MiniMax → Mock
+ *   IBM Granite → GPT OSS → Gemini Pro → Gemini Flash → Nemotron → MiniMax → Mock
  */
 export class AIProviderRouter implements AIProvider {
   readonly name: AIProviderName;
@@ -43,6 +45,7 @@ export class AIProviderRouter implements AIProvider {
   private lastFallback = false;
 
   constructor(providers: {
+    ibmGranite?: AIProvider;
     gptOss?: AIProvider;
     geminiPro?: AIProvider;
     geminiFlash?: AIProvider;
@@ -51,6 +54,7 @@ export class AIProviderRouter implements AIProvider {
     mock: AIProvider;
   }) {
     this.chain = [
+      providers.ibmGranite,
       providers.gptOss,
       providers.geminiPro,
       providers.geminiFlash,
@@ -62,7 +66,8 @@ export class AIProviderRouter implements AIProvider {
     this.taskMap = {
       quick: providers.geminiFlash ?? providers.gptOss ?? this.chain[0],
       deep: providers.gptOss ?? providers.geminiPro ?? this.chain[0],
-      tactical: providers.geminiPro ?? providers.gptOss ?? this.chain[0]
+      tactical: providers.geminiPro ?? providers.gptOss ?? this.chain[0],
+      explain: providers.ibmGranite ?? providers.gptOss ?? providers.geminiPro ?? this.chain[0]
     };
 
     this.name = this.chain[0].name;
@@ -178,6 +183,7 @@ export function getAIProvider(): AIProviderRouter {
     const geminiKey = process.env.GEMINI_API_KEY?.trim();
     const nvidiaKey = process.env.NVIDIA_API_KEY?.trim();
     const minimaxKey = process.env.MINIMAX_API_KEY?.trim() || nvidiaKey;
+    const graniteKey = process.env.IBM_GRANITE_API_KEY?.trim();
 
     // Build from bottom up
     let minimax: AIProvider | undefined;
@@ -221,7 +227,19 @@ export function getAIProvider(): AIProviderRouter {
       );
     }
 
-    return { gptOss, geminiPro, geminiFlash, nemotron, minimax, mock };
+    let ibmGranite: AIProvider | undefined;
+    if (graniteKey) {
+      ibmGranite = new GraniteProvider(
+        {
+          apiKey: graniteKey,
+          endpoint: process.env.IBM_GRANITE_ENDPOINT?.trim(),
+          model: process.env.IBM_GRANITE_MODEL?.trim()
+        },
+        (gptOss ?? geminiPro ?? geminiFlash ?? nemotron ?? minimax ?? mock)
+      );
+    }
+
+    return { ibmGranite, gptOss, geminiPro, geminiFlash, nemotron, minimax, mock };
   };
 
   router = new AIProviderRouter(createProviders());

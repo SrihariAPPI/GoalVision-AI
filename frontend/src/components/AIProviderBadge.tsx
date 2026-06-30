@@ -4,6 +4,7 @@ import { cn } from "../lib/utils";
 
 const providerLabels: Record<string, { label: string; color: string }> = {
   "gpt-oss": { label: "GPT OSS", color: "border-pitch-500/40 bg-pitch-500/10 text-pitch-400" },
+  "ibm-granite": { label: "IBM Granite", color: "border-blue-500/30 bg-blue-500/10 text-blue-400" },
   "gemini-pro": { label: "Gemini Pro", color: "border-pitch-500/40 bg-pitch-500/10 text-pitch-400" },
   "gemini-flash": { label: "Gemini Flash", color: "border-electric-500/30 bg-electric-500/10 text-electric-400" },
   nemotron: { label: "Nemotron", color: "border-pitch-500/40 bg-pitch-500/10 text-pitch-400" },

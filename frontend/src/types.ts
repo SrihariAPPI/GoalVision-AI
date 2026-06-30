@@ -116,6 +116,7 @@ export type AIProviderName =
   | "gemini-pro"
   | "nemotron"
   | "minimax"
+  | "ibm-granite"
   | "mock";
 
 export interface AIResult {

@@ -6,6 +6,7 @@ import type { ProviderOption } from "../types";
 
 const PROVIDER_OPTIONS: { value: ProviderOption; label: string; desc: string }[] = [
   { value: "auto", label: "Auto (Recommended)", desc: "Intelligently routes each query to the optimal AI model" },
+  { value: "ibm-granite", label: "IBM Granite", desc: "IBM Cloud / watsonx — explainable AI on key match events" },
   { value: "gpt-oss", label: "GPT OSS 120B", desc: "NVIDIA NIM — deep reasoning & match explanations" },
   { value: "gemini-flash", label: "Gemini Flash", desc: "Google — quick chat & lightweight tasks" },
   { value: "gemini-pro", label: "Gemini Pro", desc: "Google — tactical analysis & complex reasoning" },
@@ -22,6 +23,7 @@ const providerBadgeColor = (provider: string, live: boolean): "pitch" | "electri
 
 const providerDisplayName = (provider: string): string => {
   const map: Record<string, string> = {
+    "ibm-granite": "IBM Granite",
     "gpt-oss": "GPT OSS 120B",
     "gemini-flash": "Gemini Flash",
     "gemini-pro": "Gemini Pro",
